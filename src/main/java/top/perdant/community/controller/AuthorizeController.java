@@ -7,9 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import top.perdant.community.dto.AccessTokenDTO;
 import top.perdant.community.dto.GitHubUser;
+import top.perdant.community.mapper.UserMapper;
+import top.perdant.community.model.User;
 import top.perdant.community.provider.GitHubProvider;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 @Controller
 public class AuthorizeController {
@@ -26,6 +29,9 @@ public class AuthorizeController {
     @Value("${github.redirect.uri}")
     private String redirectUri;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @GetMapping("/callback")
     public String callback(@RequestParam(name="code") String code,
                            @RequestParam(name="state") String state,
@@ -37,10 +43,18 @@ public class AuthorizeController {
         accessTokenDTO.setRedirect_uri(redirectUri);
         accessTokenDTO.setState(state);
         String accessToken = gitHubProvider.getAccessToken(accessTokenDTO);
-        GitHubUser user = gitHubProvider.getUser(accessToken);
-        if (user != null){
+        GitHubUser gitHubUser = gitHubProvider.getUser(accessToken);
+        if (gitHubUser != null){
+            // 将user信息写入数据库
+            User user = new User();
+            user.setToken(UUID.randomUUID().toString());
+            user.setAccountId(String.valueOf(gitHubUser.getId()));
+            user.setName(gitHubUser.getName());
+            user.setGmtCreate(System.currentTimeMillis());
+            user.setGmtModified(user.getGmtCreate());
+            userMapper.insert(user);
             // 登录成功 写cookie 和 session
-            request.getSession().setAttribute("user",user);
+            request.getSession().setAttribute("user",gitHubUser);
             return  "redirect:/";
         }else {
             // 登录失败
