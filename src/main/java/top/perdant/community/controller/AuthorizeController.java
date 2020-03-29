@@ -9,6 +9,8 @@ import top.perdant.community.dto.AccessTokenDTO;
 import top.perdant.community.dto.GitHubUser;
 import top.perdant.community.provider.GitHubProvider;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class AuthorizeController {
 
@@ -26,8 +28,8 @@ public class AuthorizeController {
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name="code") String code,
-                           @RequestParam(name="state") String state
-                           ){
+                           @RequestParam(name="state") String state,
+                           HttpServletRequest request){
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_id(clientId);
         accessTokenDTO.setClient_secret(clientSecret);
@@ -36,7 +38,13 @@ public class AuthorizeController {
         accessTokenDTO.setState(state);
         String accessToken = gitHubProvider.getAccessToken(accessTokenDTO);
         GitHubUser user = gitHubProvider.getUser(accessToken);
-        System.out.println(user.getName());
-        return "index";
+        if (user != null){
+            // 登录成功 写cookie 和 session
+            request.getSession().setAttribute("user",user);
+            return  "redirect:/";
+        }else {
+            // 登录失败
+            return "redirect:/";
+        }
     }
 }

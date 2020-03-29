@@ -23,3 +23,5 @@ fastjson 快速把java对象转换为json
 1. 使用bootstrap框架 快速搭建：[Bootstrap 文档](https://v3.bootcss.com/getting-started/)
 2. 接入GitHub登录功能： [GitHub OAuth app](https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/)
     使用的是 OAuth 授权机制：[OAuth 简介](http://www.ruanyifeng.com/blog/2019/04/oauth_design.html)
+3. 设置 session 和 cookie
+    把GitHub返回给服务器的user对象添加到session中，Spring自动为其生成cookie返回到前端
