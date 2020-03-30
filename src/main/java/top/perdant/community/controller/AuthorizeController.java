@@ -11,7 +11,9 @@ import top.perdant.community.mapper.UserMapper;
 import top.perdant.community.model.User;
 import top.perdant.community.provider.GitHubProvider;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 @Controller
@@ -35,7 +37,8 @@ public class AuthorizeController {
     @GetMapping("/callback")
     public String callback(@RequestParam(name="code") String code,
                            @RequestParam(name="state") String state,
-                           HttpServletRequest request){
+                           HttpServletRequest request,
+                           HttpServletResponse response){
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_id(clientId);
         accessTokenDTO.setClient_secret(clientSecret);
@@ -44,17 +47,23 @@ public class AuthorizeController {
         accessTokenDTO.setState(state);
         String accessToken = gitHubProvider.getAccessToken(accessTokenDTO);
         GitHubUser gitHubUser = gitHubProvider.getUser(accessToken);
+        // 登录成功
         if (gitHubUser != null){
-            // 将user信息写入数据库
+            // 手动模拟 session 和 cookie 从而实现持久化登录
+            // 将user信息写入数据库,这个数据库模拟服务器的session
             User user = new User();
-            user.setToken(UUID.randomUUID().toString());
+            // 生成一个唯一标识token
+            String token = UUID.randomUUID().toString();
+            user.setToken(token);
             user.setAccountId(String.valueOf(gitHubUser.getId()));
             user.setName(gitHubUser.getName());
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
             userMapper.insert(user);
-            // 登录成功 写cookie 和 session
-            request.getSession().setAttribute("user",gitHubUser);
+            // 将 token 写入一个 HttpServletResponse 自带的 cookie
+            response.addCookie(new Cookie("token",token));
+//            // 使用自带的 session 将 gitHubUser 自动生成的 JSESSIONID 写入到 HttpServletRequest 自带的 session
+//            request.getSession().setAttribute("user",gitHubUser);
             return  "redirect:/";
         }else {
             // 登录失败

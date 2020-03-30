@@ -28,7 +28,7 @@
                 <button type="submit" class="btn btn-default">搜索</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
-                <!-- Request a user's GitHub identity -->
+                <!-- 自带的session里检查 user （就是之前获取到的gitHubUser）是否是空-->
                 <li class="dropdown" th:if="${session.user != null}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="${session.user.getName()}">
                         <span class="caret"></span>
