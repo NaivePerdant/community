@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>发布 - 社区项目</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <!--引入BootStrap的css文件/主题文件和js文件-->
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
@@ -13,7 +13,8 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                 <span class="sr-only">社区项目</span>
             </button>
             <a class="navbar-brand" href="#">社区项目</a>
@@ -28,9 +29,13 @@
                 <button type="submit" class="btn btn-default">搜索</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
+                <li th:if="${session.user != null}">
+                    <a href="/publish">发布</a>
+                </li>
                 <!-- 自带的session里检查 user （就是之前获取到的gitHubUser）是否是空-->
                 <li class="dropdown" th:if="${session.user != null}">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="${session.user.getName()}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false" th:text="${session.user.getName()}">
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
@@ -51,20 +56,32 @@
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
             <h2><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>发起</h2>
             <hr>
-            <form action="">
+            <form action="\publish" method="post">
                 <div class="form-group">
                     <label for="title">问题</label>
-                    <input type="text" class="form-control" id="title" placeholder="问题标题....">
+                    <input name="title" id="title" type="text" class="form-control" th:value="${title}"
+                           placeholder="问题标题....">
                 </div>
                 <div class="form-group">
                     <label for="description">问题补充</label>
-                    <textarea name="description" id="description" class="form-control" cols="30" rows="10"></textarea>
+                    <textarea name="description" id="description" th:value="${description}" class="form-control"
+                              cols="30" rows="10"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="tag">添加标签</label>
-                    <input name="tag" id="tag" type="text" class="form-control" placeholder="输入标签">
+                    <input name="tag" id="tag" type="text" th:value="${tag}" class="form-control" placeholder="输入标签">
                 </div>
-                <button type="submit" class="btn btn-success btn-publish">发布</button>
+                <div class="container-fluid main">
+                    <div class="row">
+                        <div class="alert alert-danger col-lg-3 col-md-12 col-sm-12 col-xs-12" th:if="${error != null}"
+                             th:text="${error}"></div>
+                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                            <button type="submit" class="btn btn-success btn-publish">
+                                发布
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">

@@ -47,8 +47,8 @@ public class AuthorizeController {
         accessTokenDTO.setState(state);
         String accessToken = gitHubProvider.getAccessToken(accessTokenDTO);
         GitHubUser gitHubUser = gitHubProvider.getUser(accessToken);
-        // 登录成功
-        if (gitHubUser != null){
+        // 登录成功 有时候重置了code 获取到了gitHubUser但是里面的id是空的
+        if (gitHubUser != null && gitHubUser.getId() != null){
             // 手动模拟 session 和 cookie 从而实现持久化登录
             // 将user信息写入数据库,这个数据库模拟服务器的session
             User user = new User();

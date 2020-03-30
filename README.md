@@ -12,7 +12,9 @@ BootStrap 整合好的css和js 前端框架
 
 OkHttp 代替client http
 
-fastjson 快速把java对象转换为json
+thymeleaf 模版
+
+fastJson 快速把java对象转换为json
 
 MySQL
 
@@ -69,6 +71,8 @@ flyway 方便团队编程时数据库的修改和合并
 7. 使用flyway优化数据库版本整合
 
 8. 使用bootstrap布局publish页面 添加PublishController
+
+9. 添加问题，question table； Question 类；QuestionMapper
 
 
 
