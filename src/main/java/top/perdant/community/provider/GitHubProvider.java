@@ -6,14 +6,13 @@ import org.springframework.stereotype.Component;
 import top.perdant.community.dto.AccessTokenDTO;
 import top.perdant.community.dto.GitHubUser;
 
-import java.io.IOException;
 
 @Component
 public class GitHubProvider {
     /**
      * 使用 OkHttp
-     * POST 项目向GitHub发送code获取accessToken
-     *
+     * POST 发送 client_id client_secret code redirect_uri state
+     * 获取 response 中的 token
      * @param accessTokenDTO 封装了需要发送的参数
      * @return accessToken
      */
@@ -27,6 +26,8 @@ public class GitHubProvider {
                 .build();
         try (Response response = client.newCall(request).execute()) {
             String string = response.body().string();
+            // response中形如access_token=e72e16c7e42f292c6912e7710c838347ae178b4a&token_type=bearer
+            // 我们只要前一部分
             String token = string.split("&")[0].split("=")[1];
             return token;
         } catch (Exception e) {
@@ -36,7 +37,7 @@ public class GitHubProvider {
     }
 
     /**
-     * GET 发送accessToken获取user信息
+     * GET 发送token获取user信息
      * @param accessToken
      * @return 封装的GitHubUer信息
      */

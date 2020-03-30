@@ -82,6 +82,7 @@ public class PublishController {
         question.setCreator(user.getId());
         question.setGmtCreate(System.currentTimeMillis());
         question.setGmtModified(question.getGmtCreate());
+        // insert into question
         questionMapper.create(question);
         // 发布成功的话返回首页
         return "redirect:/";

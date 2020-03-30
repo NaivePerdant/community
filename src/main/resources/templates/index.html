@@ -43,6 +43,7 @@
                     </ul>
                 </li>
                 <li th:if="${session.user == null}">
+                    <!-- 向GitHub服务器发送id，GitHub会带着code跳转到指定uri-->
                     <a href="https://github.com/login/oauth/authorize?client_id=b4f7f86249a8a17868a7&redirect_uri=http://localhost:8887/callback&scope=user&state=1">登录</a>
                 </li>
             </ul>
