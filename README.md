@@ -38,3 +38,18 @@ H2数据库
     需要注意的是**IDEA其实自带了链接数据库的功能，不需要下载Navicat等第三方软件**。
 5. mybatis Spring boot 整合，需要一个jar包**MyBatis Spring Boot Starter**
     其中在链接数据库时自动寻找Springboot官方支持的连接池配置，[详情见Springboot文档](https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/html/spring-boot-features.html#boot-features-embedded-database-support)
+    
+ ## 脚本
+ ```sql
+create table USER
+(
+	ID INT auto_increment,
+	ACCOUNT_ID VARCHAR(100),
+	NAME VARCHAR(50),
+	TOKEN CHAR(36),
+	GMT_CREATE BIGINT,
+	GMT_MODIFIED BIGINT,
+	constraint USER_PK
+		primary key (ID)
+);
+```
