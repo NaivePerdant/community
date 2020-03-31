@@ -64,13 +64,12 @@ public class AuthorizeController {
             user.setName(gitHubUser.getName());
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
+            user.setAvatarUrl(gitHubUser.getAvatarUrl());
             // user 添加到数据库
             userMapper.insert(user);
             // 将 token 写入一个 HttpServletResponse 自带的 cookie
             // 通过 response 返回给浏览器 所以 cookie 是存储在浏览器中的
             response.addCookie(new Cookie("token",token));
-//            // 使用自带的 session 将 gitHubUser 自动生成的 JSESSIONID 写入到 HttpServletRequest 自带的 session
-//            request.getSession().setAttribute("user",gitHubUser);
             return  "redirect:/";
         }else {
             // 登录失败

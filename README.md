@@ -48,18 +48,15 @@ MySQL的基本使用CURD：[MySQL 菜鸟教程](https://www.runoob.com/mysql/mys
     1. 去 GitHub 申请一个 client_id 和 client_secret
     
     2. 点击登录 通过`GET https://github.com/login/oauth/authorize` （在 url 中有几个参数，如 client_id、
-    
-    redirect_uri、state 等） 会访问一个 GitHub 授权的页面，点击确认授权之后，会跳转到 redirect_uri 指定的地址(\callback)，
-    
+    redirect_uri、state 等） 会访问一个 GitHub 授权的页面，点击确认授权之后，会跳转到 redirect_uri 指定的地址(\callback)，   
     所以我们要编写一个 **AuthorizeController 类(\callback)**，从该地址中获取到一个临时的 code 和 state
     
     3. 通过 `POST https://github.com/login/oauth/access_token`（ url 中有几个参数: client_id client_secret code redirect_uri state
-    
     将这5个参数封装成 **AccessTokenDTO 类**) 获取到 token
     
     4. 通过 `GET https://api.github.com/user` 发送上一步的 token 获取到 user 信息
     
-    5. 最后两步使用了 OkHttp，新建 **GitHubProvider 类** 更方便的完成GET POST，新建 **GitHubUser 类**封装获取到的 user 信息
+    5. 最后两步使用了 OkHttp（优化 GET POST ） 和 fastjson（快速转换 json 格式），新建 **GitHubProvider 类** 更方便的完成GET POST，新建 **GitHubUser 类**封装获取到的 user 信息
     
     [OKHttp GET POST 写法](https://square.github.io/okhttp/)
  
@@ -77,8 +74,11 @@ MySQL的基本使用CURD：[MySQL 菜鸟教程](https://www.runoob.com/mysql/mys
     
 4. 上述过程，需要 **User 类**封装 token 和 GitHubUser 信息
         
-    需要一个数据库 COMMUNITY 并新建**表 user table** 保存 token 和 GitHubUser，为了尽可能的简单，使用 h2 数据库，h2 数据库的优势在于嵌入式、体积小，
-    可以直接通过导 jar 包的形式加载进项目，缺点是，同一时间只能链接一个 connection [h2 快速部署](http://www.h2database.com/html/quickstart.html) 
+    需要一个数据库 COMMUNITY 并新建**表 user table** 保存 token 和 GitHubUser，为了尽可能的简单，使用 h2 数据库
+    
+    h2 数据库的优势在于嵌入式、体积小，可以直接通过导 jar 包的形式加载进项目
+    
+    缺点是，同一时间只能链接一个 connection [h2 快速部署](http://www.h2database.com/html/quickstart.html) 
     
     需要注意的是IDEA其实自带了链接数据库的功能，不需要下载 Navicat 等第三方软件
     
@@ -113,11 +113,15 @@ MySQL的基本使用CURD：[MySQL 菜鸟教程](https://www.runoob.com/mysql/mys
    3. 数据库中新建一个**表 question table** 通过 mybatis 将 Question 存入其中，所以需要新建一个 **QuestionMapper 接口**
    
    4. 新建一个 **PublishController 类(/publish)** GET 直接返回 publish.html，POST 将 title description tag 以及之前的 user 信息
-   
-    传递给 question，将 question 插入 question table
+   传递给 question，将 question 插入 question table
     
    5. 处理一些判空的情况，user title description tag 都不能为空
-
+   
+9. 给 user table 添加一列 avatar_url  User 类就需要添加一条对应的属性，并且更新 set get 方法，
+    
+    每次添加属性都要添加 set get 方法，太麻烦了，使用 Lombok [Lombok install by maven](https://projectlombok.org/setup/maven)
+    
+    Lombok 通过注解 @Data 可以自动生成 set get 方法
 
  ## 脚本
  
