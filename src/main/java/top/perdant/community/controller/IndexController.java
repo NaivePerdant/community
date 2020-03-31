@@ -2,20 +2,29 @@ package top.perdant.community.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import top.perdant.community.dto.QuestionDTO;
 import top.perdant.community.mapper.UserMapper;
+import top.perdant.community.model.Question;
 import top.perdant.community.model.User;
+import top.perdant.community.service.QuestionService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class IndexController {
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    QuestionService questionService;
+
     @GetMapping("/")
-    public String index(HttpServletRequest request) {
+    public String index(HttpServletRequest request,
+                        Model model) {
         // 从 cookies 里找是否有 name 为 token 的那条 cookie
         Cookie[] cookies = request.getCookies();
         if (cookies != null && cookies.length != 0) {
@@ -33,6 +42,9 @@ public class IndexController {
                 }
             }
         }
+
+        List<QuestionDTO> questionDTOList = questionService.list();
+        model.addAttribute("questions",questionDTOList);
         return "index";
     }
 

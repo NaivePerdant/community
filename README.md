@@ -12,7 +12,7 @@ BootStrap 整合好的 css 和 js 前端框架
 
 OkHttp 代替 client http
 
-thymeleaf 模版
+thymeleaf 模版引擎 类似 JSP
 
 fastJson  完成 java json 的快速转换
 
@@ -96,7 +96,7 @@ MySQL的基本使用CURD：[MySQL 菜鸟教程](https://www.runoob.com/mysql/mys
     
     登录时，先检查 cookie 中的 token，去数据库中寻找对应的 token，如果找到，取出对应的 GitHubUser 说明登录成功，
     
-    通过对 index.html 添加 `th:if="${session.user != null}` 语句展现出已经登录的样式，从而使浏览器保持登录状态 
+    通过对 index.html 添加 [`th:if="${session.user != null}`](https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html) 语句展现出已经登录的样式，从而使浏览器保持登录状态 
     
 7. 使用 flyway 优化数据库版本整合 [flyway maven 配置](https://flywaydb.org/getstarted/firststeps/maven)
 
@@ -120,9 +120,22 @@ MySQL的基本使用CURD：[MySQL 菜鸟教程](https://www.runoob.com/mysql/mys
 9. 给 user table 添加一列 avatar_url  User 类就需要添加一条对应的属性，并且更新 set get 方法，
     
     每次添加属性都要添加 set get 方法，太麻烦了，使用 Lombok [Lombok install by maven](https://projectlombok.org/setup/maven)
-    
     Lombok 通过注解 @Data 可以自动生成 set get 方法
+    
+10. 给首页添加内容，起初的首页只有导航栏，通过 bootstrap 给首页添加下面的部分——展示一些用户提出的问题
 
+    需要在后端把 Question 从 question table 中提取出来，然后传递到 index.html  但是其中需要展示一部分 User 的信息，
+    需要通过 Question 中的 creator 属性来找到 User 对应的 id，从而拿到 user 的信息，所以 需要在 Question 中加入一个 User 对象
+    
+    但是 Question 的属性都是和数据库属性一一对应的，所以在传输层新建一个 **QuestionDTO 类**用来传递给 Model 然后再通过 Model 返回给 index
+    
+    这里又出现了一个新的问题，question table 中查到的信息只能返回给 Question，该如何返回给 QuestionDTO ？这里引出一个新的概念：**service** 
+    
+    在 service 层中，可以将 QuestionMapper 和 UserMapper 组装起来 一起使用
+    
+    使用 QuestionDTO 封装 Question 和 User ，放到一个集合 questions 中，在 index.html 中使用模版引擎 thymeleaf 快速循环遍历 questions 
+    把其中的 title description avatarUrl 等等信息显示出来
+    
  ## 脚本
  
  ```sql
