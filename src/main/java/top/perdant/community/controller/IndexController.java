@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import top.perdant.community.dto.PaginationDTO;
 import top.perdant.community.dto.QuestionDTO;
 import top.perdant.community.mapper.UserMapper;
 import top.perdant.community.model.Question;
@@ -24,6 +26,8 @@ public class IndexController {
 
     @GetMapping("/")
     public String index(HttpServletRequest request,
+                        @RequestParam(name = "page", defaultValue = "1") Integer page,
+                        @RequestParam(name = "size", defaultValue = "2") Integer size,
                         Model model) {
         // 从 cookies 里找是否有 name 为 token 的那条 cookie
         Cookie[] cookies = request.getCookies();
@@ -42,12 +46,8 @@ public class IndexController {
                 }
             }
         }
-
-        List<QuestionDTO> questionDTOList = questionService.list();
-        for (QuestionDTO questionDTO : questionDTOList) {
-            questionDTO.setDescription("测试热部署");
-        }
-        model.addAttribute("questions",questionDTOList);
+        PaginationDTO paginationDTO = questionService.list(page, size);
+        model.addAttribute("pagination", paginationDTO);
         return "index";
     }
 

@@ -22,6 +22,8 @@ H2 数据库
 
 flyway 方便团队编程时数据库的修改和合并
 
+jQuery 封装了很多方法，更方便的操作js
+
 
 ## 资料
 
@@ -144,7 +146,15 @@ MySQL的基本使用CURD：[MySQL 菜鸟教程](https://www.runoob.com/mysql/mys
      
      在配合上 [LiveReload Chrome 插件](http://livereload.com/extensions/)，可以在服务器重启的时候自动刷新浏览器页面，让整个修改的过程变得更加便捷。 
      
- 12. 
+ 12. 添加分页功能 
+ 
+    总页数 = 数据库总记录数 / 12 向上取整
+    
+    当前页码所显示的起始记录 = （当前页码 - 1）* 5
+    
+    为了让前端能显示除了 question 以外的页码信息，新建 **PaginationDTO 类**
+ 
+ 13. 完善导航栏，增加下拉效果需要引入 jQuery
 
  ## 脚本
  
