@@ -153,6 +153,14 @@ MySQL的基本使用CURD：[MySQL 菜鸟教程](https://www.runoob.com/mysql/mys
  14. 添加 个人中心 profile.html  需要使用一个新的 Controller **ProfileController 类** 
  
  15. 在个人中心中 添加一个 "我的问题" 栏目，采用与首页展示问题类似的方式，依旧是使用之前添加分页功能时的步骤，多添加一个 userId 参数
+ 
+ 16. 当跳转不同的页面时，都需要浏览器通过 cookie session 判断一次登录状态，会造成很多冗余的代码，引入 **Interception** [参考文档](https://docs.spring.io/spring/docs/5.2.5.RELEASE/spring-framework-reference/web.html#filters)
+拦截器可以在一个请求执行前，执行时，执行后 进行处理，如果返回 true 则允许请求通过，否则拒绝掉请求。
+
+    注意：拦截器有可能会拦截到 css js 等，需要把 WebConfig 上的注解 @EnableWebMvc 去掉
+    
+    原因：EnableWebMvc导入DelegatingXXX（实现了 WebxxSupport），导致 WebAutoConfiguration (其中可以默认的去不过滤 static 文件夹)实例失败
+ 
  ## 脚本
  
  ```sql

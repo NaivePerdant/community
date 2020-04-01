@@ -7,11 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import top.perdant.community.mapper.QuestionMapper;
-import top.perdant.community.mapper.UserMapper;
 import top.perdant.community.model.Question;
 import top.perdant.community.model.User;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
@@ -19,9 +17,6 @@ public class PublishController {
 
     @Autowired
     QuestionMapper questionMapper;
-
-    @Autowired
-    UserMapper userMapper;
 
     @GetMapping("/publish")
     public String publish(){
@@ -55,20 +50,7 @@ public class PublishController {
         }
 
         // 为了拿到question的id，首先拿到user
-        User user = null;
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null && cookies.length != 0) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")){
-                    String token = cookie.getValue();
-                    user = userMapper.findByToken(token);
-                    if (user != null){
-                        request.getSession().setAttribute("user",user);
-                    }
-                    break;
-                }
-            }
-        }
+        User user = (User)request.getSession().getAttribute("user");
         // 如果没找到user 添加错误信息给model，用来给页面显示错误信息
         // 这是前后端没有分离导致的笨拙方法
         if (user == null){
