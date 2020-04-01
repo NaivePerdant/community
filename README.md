@@ -146,15 +146,9 @@ MySQL的基本使用CURD：[MySQL 菜鸟教程](https://www.runoob.com/mysql/mys
      
      在配合上 [LiveReload Chrome 插件](http://livereload.com/extensions/)，可以在服务器重启的时候自动刷新浏览器页面，让整个修改的过程变得更加便捷。 
      
- 12. 添加分页功能 
+ 12. 添加分页功能：总页数 = 数据库总记录数 / 12 向上取整,当前页码所显示的起始记录 = （当前页码 - 1）* 5，为了让前端能显示除了 question 以外的页码信息，新建 **PaginationDTO 类**
  
-    总页数 = 数据库总记录数 / 12 向上取整
-    
-    当前页码所显示的起始记录 = （当前页码 - 1）* 5
-    
-    为了让前端能显示除了 question 以外的页码信息，新建 **PaginationDTO 类**
- 
- 13. 完善导航栏，增加下拉效果需要引入 jQuery
+ 13. 完善导航栏，增加下拉效果需要引入 jQuery，使用 `th:fragment` 将导航栏作为一个单独的模版，引入各个页面
 
  ## 脚本
  
