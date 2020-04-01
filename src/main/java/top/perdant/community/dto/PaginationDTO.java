@@ -1,7 +1,6 @@
 package top.perdant.community.dto;
 
 import lombok.Data;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,11 @@ public class PaginationDTO {
     private Integer totalPage;
 
     public void setPagination(Integer totalCount, Integer page, Integer size) {
-        if (totalCount % size == 0) {
+        // 当用户没有提问过问题，数据库里查找到的是 0 条
+        // 那么计算页数的时候一定要注意，不能返回页码 0，返回默认的页码 1
+        if (totalCount == 0){
+            totalPage = 1;
+        } else if (totalCount % size == 0) {
             totalPage = totalCount / size;
         } else {
             totalPage = totalCount / size + 1;

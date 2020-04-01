@@ -60,4 +60,38 @@ public class QuestionService {
         paginationDTO.setQuestions(questionDTOList);
         return paginationDTO;
     }
+
+    public PaginationDTO list(Integer userId, Integer page, Integer size) {
+        PaginationDTO paginationDTO = new PaginationDTO();
+        // 所有问题的总数量
+        Integer totalCount = questionMapper.countByUserId(userId);
+        // 设置页码
+        paginationDTO.setPagination(totalCount,page,size);
+
+        if (page < 1) {
+            page = 1;
+        }
+        if (page > paginationDTO.getTotalPage()) {
+            page = paginationDTO.getTotalPage();
+        }
+
+        // 传递给 sql 的参数应该是查询开始的位置 offset ，和查询的个数 size
+        // 根据当前页码 page 计算出 offset
+        Integer offset = size * (page - 1);
+        // 问题列表
+        List<Question> questions = questionMapper.listByUserId(userId,offset,size);
+        // 组合：问题 + 提问者信息列表
+        List<QuestionDTO> questionDTOList = new ArrayList<>();
+        for (Question question : questions) {
+            User user = userMapper.findById(question.getCreator());
+            QuestionDTO questionDTO = new QuestionDTO();
+            // 直接使用 Spring 自带的方法，将 question 里的各种属性 传递给 questionDTO
+            // 省去了 set get 操作
+            BeanUtils.copyProperties(question, questionDTO);
+            questionDTO.setUser(user);
+            questionDTOList.add(questionDTO);
+        }
+        paginationDTO.setQuestions(questionDTOList);
+        return paginationDTO;
+    }
 }

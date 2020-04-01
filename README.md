@@ -149,7 +149,10 @@ MySQL的基本使用CURD：[MySQL 菜鸟教程](https://www.runoob.com/mysql/mys
  12. 添加分页功能：总页数 = 数据库总记录数 / 12 向上取整,当前页码所显示的起始记录 = （当前页码 - 1）* 5，为了让前端能显示除了 question 以外的页码信息，新建 **PaginationDTO 类**
  
  13. 完善导航栏，增加下拉效果需要引入 jQuery，使用 `th:fragment` 将导航栏作为一个单独的模版，引入各个页面
-
+ 
+ 14. 添加 个人中心 profile.html  需要使用一个新的 Controller **ProfileController 类** 
+ 
+ 15. 在个人中心中 添加一个 "我的问题" 栏目，采用与首页展示问题类似的方式，依旧是使用之前添加分页功能时的步骤，多添加一个 userId 参数
  ## 脚本
  
  ```sql
