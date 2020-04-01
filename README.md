@@ -27,6 +27,8 @@ flyway 方便团队编程时数据库的修改和合并
 
 如何用 Spring Boot 启动一个web：[Spring web](https://spring.io/guides/gs/serving-web-content/)
 
+[Spring Boot 文档](https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/htmlsingle/)
+
 如何用 Git 将项目 push 到 GitHub：[Git](https://www.runoob.com/manual/git-guide/)
 
 OAuth 授权机制：[OAuth 简介](http://www.ruanyifeng.com/blog/2019/04/oauth_design.html)
@@ -136,6 +138,14 @@ MySQL的基本使用CURD：[MySQL 菜鸟教程](https://www.runoob.com/mysql/mys
     使用 QuestionDTO 封装 Question 和 User ，放到一个集合 questions 中，在 index.html 中使用模版引擎 thymeleaf 快速循环遍历 questions 
     把其中的 title description avatarUrl 等等信息显示出来
     
+11. 之前每一次修改代码，都需要重启项目重新访问地址，才能看到修改的效果，为了加速 加载重启 这个过程，引入一个新的工具 [Spring Develop Tools](https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/htmlsingle/#using-boot-devtools)
+     其实就是一种自动重启功能，当然之前需要 build ，相比 JRebel 的热部署，Spring Develop Tools 是会重启项目的。
+     通过修改IDEA配置，在项目启动时也可以自动 build （只要保存，就会出发 build）然后项目就会通过 Spring Develop Tools 快速重启
+     
+     在配合上 [LiveReload Chrome 插件](http://livereload.com/extensions/)，可以在服务器重启的时候自动刷新浏览器页面，让整个修改的过程变得更加便捷。 
+     
+ 12. 
+
  ## 脚本
  
  ```sql

@@ -44,6 +44,9 @@ public class IndexController {
         }
 
         List<QuestionDTO> questionDTOList = questionService.list();
+        for (QuestionDTO questionDTO : questionDTOList) {
+            questionDTO.setDescription("测试热部署");
+        }
         model.addAttribute("questions",questionDTOList);
         return "index";
     }

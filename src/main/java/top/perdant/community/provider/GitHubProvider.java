@@ -52,7 +52,7 @@ public class GitHubProvider {
 
         try (Response response = client.newCall(request).execute()) {
             String string = response.body().string();
-            // 把 JSON 快速转换成 GitHubUser 类
+            // 把 JSON 快速转换成 GitHubUser 类 并且把下划线标识自动映射为驼峰标识
             GitHubUser gitHubUser = JSON.parseObject(string, GitHubUser.class);
             return gitHubUser;
         } catch (Exception e) {
