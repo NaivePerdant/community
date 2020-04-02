@@ -24,6 +24,7 @@
                 </form>
                 <ul class="nav navbar-nav navbar-right">
                     <li th:if="${session.user != null}">
+                        <!--GET -->
                         <a href="/publish">提问</a>
                     </li>
                     <!-- 自带的session里检查 user （就是之前获取到的gitHubUser）是否是空-->

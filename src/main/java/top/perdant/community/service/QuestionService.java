@@ -1,5 +1,6 @@
 package top.perdant.community.service;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import top.perdant.community.dto.QuestionDTO;
 import top.perdant.community.mapper.QuestionMapper;
 import top.perdant.community.mapper.UserMapper;
 import top.perdant.community.model.Question;
+import top.perdant.community.model.QuestionExample;
 import top.perdant.community.model.User;
 
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ public class QuestionService {
 
     /**
      * 根据当前页码和一页展示的问题数，返回当前页面的所有问题信息 和 页码的信息
+     *
      * @param page 当前的页码
      * @param size 每页展示的问题数
      * @return PaginationDTO  包装了 当前页码对应的所有问题 当前页码前后的页码数 是否展示下一页 上一页 尾页 首页的标识
@@ -30,9 +33,9 @@ public class QuestionService {
     public PaginationDTO list(Integer page, Integer size) {
         PaginationDTO paginationDTO = new PaginationDTO();
         // 所有问题的总数量
-        Integer totalCount = questionMapper.count();
+        Integer totalCount = (int) questionMapper.countByExample(new QuestionExample());
         // 设置页码
-        paginationDTO.setPagination(totalCount,page,size);
+        paginationDTO.setPagination(totalCount, page, size);
         // 判断传递的 page 是否超出范围
         if (page < 1) {
             page = 1;
@@ -45,7 +48,7 @@ public class QuestionService {
         // 根据当前页码 page 计算出 offset
         Integer offset = size * (page - 1);
         // 问题列表
-        List<Question> questions = questionMapper.list(offset,size);
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), new RowBounds(offset, size));
         // 组合：问题 + 提问者信息列表
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questions) {
@@ -64,9 +67,12 @@ public class QuestionService {
     public PaginationDTO list(Integer userId, Integer page, Integer size) {
         PaginationDTO paginationDTO = new PaginationDTO();
         // 所有问题的总数量
-        Integer totalCount = questionMapper.countByUserId(userId);
+        QuestionExample example = new QuestionExample();
+        example.createCriteria()
+                .andCreatorEqualTo(userId);
+        Integer totalCount = (int) questionMapper.countByExample(example);
         // 设置页码
-        paginationDTO.setPagination(totalCount,page,size);
+        paginationDTO.setPagination(totalCount, page, size);
 
         if (page < 1) {
             page = 1;
@@ -79,7 +85,10 @@ public class QuestionService {
         // 根据当前页码 page 计算出 offset
         Integer offset = size * (page - 1);
         // 问题列表
-        List<Question> questions = questionMapper.listByUserId(userId,offset,size);
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.createCriteria()
+                .andCreatorEqualTo(userId);
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(offset, size));
         // 组合：问题 + 提问者信息列表
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questions) {
@@ -96,7 +105,7 @@ public class QuestionService {
     }
 
     public QuestionDTO getById(Integer id) {
-        Question question = questionMapper.getById(id);
+        Question question = questionMapper.selectByPrimaryKey(id);
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);
         User user = userMapper.selectByPrimaryKey(question.getCreator());
@@ -106,18 +115,27 @@ public class QuestionService {
 
     /**
      * 整个过程和 userService 的 createOrUpdate 类似
+     *
      * @param question
      */
     public void createOrUpdate(Question question) {
-        if (question.getId() == null){
+        // id 为空，说明是第一次发布的问题，第一次发布的问题不会传递 id
+        if (question.getId() == null) {
             // 插入
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
-            questionMapper.create(question);
-        }else {
-            // 更新
-            question.setGmtModified(System.currentTimeMillis());
-            questionMapper.update(question);
+            questionMapper.insert(question);
+        } else {
+            // 更新 不能简单的使用 updateByPrimaryKey
+            // 因为 question 只是记录了 常见的修改属性 title description tag GmtModified
+            // 而其他的属性 GmtCreate viewCount commentCount 等等 都需要保留原来数据库里面的
+            // 不然的话，没有赋值的属性会变成 null，null 也会更新 数据库中的信息
+            Question updateQuestion = questionMapper.selectByPrimaryKey(question.getId());
+            updateQuestion.setGmtModified(System.currentTimeMillis());
+            updateQuestion.setTitle(question.getTitle());
+            updateQuestion.setDescription(question.getDescription());
+            updateQuestion.setTag(question.getTag());
+            questionMapper.updateByPrimaryKey(updateQuestion);
         }
     }
 }

@@ -14,6 +14,12 @@ public class QuestionController {
     @Autowired
     QuestionService questionService;
 
+    /**
+     * 拿到 id 返回 question.html
+     * @param id
+     * @param model
+     * @return
+     */
     @GetMapping("/question/{id}")
     public String question(@PathVariable(name = "id") Integer id,
                            Model model){

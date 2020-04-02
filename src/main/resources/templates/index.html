@@ -28,6 +28,7 @@
                 </div>
                 <div class="media-body">
                     <h4 class="media-heading">
+                        <!--点击问题标题，Question-Controller -->
                         <a th:href="@{'/question/'+ ${question.id}}" th:text="${question.title}"></a>
                     </h4>
                     <span th:text="${question.description}"></span><br>

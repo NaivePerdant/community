@@ -88,6 +88,7 @@ public class PublishController {
         question.setTitle(title);
         question.setDescription(description);
         question.setTag(tag);
+        // 把 user Id 赋给 creator
         question.setCreator(user.getId());
         question.setId(id);
         // insert into question

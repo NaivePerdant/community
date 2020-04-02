@@ -171,8 +171,15 @@ MySQL的基本使用CURD：[MySQL 菜鸟教程](https://www.runoob.com/mysql/mys
 20. 增加问题编辑的逻辑，类似修复登录功能的步骤
 
 21. 优化之前的一个步骤：对于之前的 mapper 层，如果对数据库的 col 做了添加或者删除，数据库的映射模型会增加属性， mapper 中的方法上的注解需要重新修改 SQL 语句，
-使用  [Mybatis Generator](http://mybatis.org/generator/index.html)
+使用  [Mybatis Generator](http://mybatis.org/generator/index.html) 在修改 Question 的映射的过程中，发现之前写的分页都要改，简直反人类
 
+在 Mybatis Generator 中查找 plugins ：org.mybatis.generator.plugins.RowBoundsPlugin
+
+Mybatis Generator  中有很多自动生成的方法，还不是很理解！
+
+有兴趣的可以研究一下这个分页插件：[GitHub pageHelper](https://github.com/pagehelper/Mybatis-PageHelper) 原理是在 mybatis 里设置一个拦截器
+
+22. 
  ## 脚本
  
  ```sql
