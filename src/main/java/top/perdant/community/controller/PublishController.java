@@ -4,11 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import top.perdant.community.dto.QuestionDTO;
 import top.perdant.community.mapper.QuestionMapper;
 import top.perdant.community.model.Question;
 import top.perdant.community.model.User;
+import top.perdant.community.service.QuestionService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,6 +21,27 @@ public class PublishController {
     @Autowired
     QuestionMapper questionMapper;
 
+    @Autowired
+    QuestionService questionService;
+
+    /**
+     * 点击编辑按钮，返回一个id ，根据 id 找到要编辑的问题
+     * 把问题重新写回浏览器
+     * @param id
+     * @return
+     */
+    @GetMapping("/publish/{id}")
+    public String edit(@PathVariable(name = "id") Integer id,
+                       Model model){
+        QuestionDTO question = questionService.getById(id);
+        model.addAttribute("title",question.getTitle());
+        model.addAttribute("description",question.getDescription());
+        model.addAttribute("tag",question.getTag());
+        // 找到每个问题的唯一标识
+        model.addAttribute("id",question.getId());
+        return "publish";
+    }
+
     @GetMapping("/publish")
     public String publish(){
         return "publish";
@@ -25,9 +49,10 @@ public class PublishController {
 
     @PostMapping("/publish")
     public String doPublish(
-            @RequestParam("title") String title,
-            @RequestParam("description") String description,
-            @RequestParam("tag") String tag,
+            @RequestParam(value = "title",required = false) String title,
+            @RequestParam(value = "description",required = false) String description,
+            @RequestParam(value = "tag",required = false) String tag,
+            @RequestParam(value = "id",required = false) Integer id,
             HttpServletRequest request,
             Model model){
 
@@ -64,10 +89,9 @@ public class PublishController {
         question.setDescription(description);
         question.setTag(tag);
         question.setCreator(user.getId());
-        question.setGmtCreate(System.currentTimeMillis());
-        question.setGmtModified(question.getGmtCreate());
+        question.setId(id);
         // insert into question
-        questionMapper.create(question);
+        questionService.createOrUpdate(question);
         // 发布成功的话返回首页
         return "redirect:/";
     }

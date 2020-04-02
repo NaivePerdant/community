@@ -103,4 +103,21 @@ public class QuestionService {
         questionDTO.setUser(user);
         return questionDTO;
     }
+
+    /**
+     * 整个过程和 userService 的 createOrUpdate 类似
+     * @param question
+     */
+    public void createOrUpdate(Question question) {
+        if (question.getId() == null){
+            // 插入
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
+            questionMapper.create(question);
+        }else {
+            // 更新
+            question.setGmtModified(System.currentTimeMillis());
+            questionMapper.update(question);
+        }
+    }
 }

@@ -4,13 +4,13 @@
     <title>发布 - 社区项目</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <!--引入BootStrap的css文件/主题文件-->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <!--引入自己定义的样式-->
-    <link rel="stylesheet" href="css/community.css">
+    <link rel="stylesheet" href="/css/community.css">
     <!--引入 jQuery 和 Bootstrap 的 js-->
-    <script src="js/jquery-3.4.1.js"></script>
-    <script src="js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="/js/jquery-3.4.1.js"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
 </head>
 <body>
 <div th:insert="navigation :: nav"></div>
@@ -20,6 +20,8 @@
             <h2><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>发起</h2>
             <hr>
             <form action="\publish" method="post">
+                <!-- hidden 的效果：隐藏着传递一个参数 id 传递给后端-->
+                <input type="hidden" name="id" th:value="${id}">
                 <div class="form-group">
                     <label for="title">问题</label>
                     <input name="title" id="title" type="text" class="form-control" th:value="${title}"
