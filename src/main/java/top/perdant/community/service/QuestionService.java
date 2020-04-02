@@ -49,7 +49,7 @@ public class QuestionService {
         // 组合：问题 + 提问者信息列表
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questions) {
-            User user = userMapper.findById(question.getCreator());
+            User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             // 直接使用 Spring 自带的方法，将 question 里的各种属性 传递给 questionDTO
             // 省去了 set get 操作
@@ -83,7 +83,7 @@ public class QuestionService {
         // 组合：问题 + 提问者信息列表
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questions) {
-            User user = userMapper.findById(question.getCreator());
+            User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             // 直接使用 Spring 自带的方法，将 question 里的各种属性 传递给 questionDTO
             // 省去了 set get 操作
@@ -99,7 +99,7 @@ public class QuestionService {
         Question question = questionMapper.getById(id);
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);
-        User user = userMapper.findById(question.getCreator());
+        User user = userMapper.selectByPrimaryKey(question.getCreator());
         questionDTO.setUser(user);
         return questionDTO;
     }

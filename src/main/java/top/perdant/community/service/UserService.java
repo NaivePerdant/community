@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.perdant.community.mapper.UserMapper;
 import top.perdant.community.model.User;
+import top.perdant.community.model.UserExample;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -17,17 +20,21 @@ public class UserService {
      * @param user
      */
     public void createOrUpdate(User user) {
-        User dbUser = userMapper.findByAccountId(user.getAccountId());
-        if (dbUser == null){
+        UserExample userExample = new UserExample();
+        userExample.createCriteria()
+                .andAccountIdEqualTo(user.getAccountId());
+        List<User> users = userMapper.selectByExample(userExample);
+        if (users.size() == 0){
             // 插入
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
             userMapper.insert(user);
         }else {
-            // 更新
-            user.setGmtCreate(dbUser.getGmtCreate()); // 其实 user 的 GmtCreate 不需要写，反正没有改变
+            // 根据 id 更新 除了 GmtCreate 保持原来的，其他的都更新
+            user.setId(users.get(0).getId());
+            user.setGmtCreate(users.get(0).getGmtCreate());
             user.setGmtModified(System.currentTimeMillis());
-            userMapper.update(user);
+            userMapper.updateByPrimaryKey(user);
         }
     }
 }

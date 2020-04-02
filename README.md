@@ -169,6 +169,10 @@ MySQL的基本使用CURD：[MySQL 菜鸟教程](https://www.runoob.com/mysql/mys
 19. 退出登录功能，需要删除浏览器中的 cookie 中的 token
 
 20. 增加问题编辑的逻辑，类似修复登录功能的步骤
+
+21. 优化之前的一个步骤：对于之前的 mapper 层，如果对数据库的 col 做了添加或者删除，数据库的映射模型会增加属性， mapper 中的方法上的注解需要重新修改 SQL 语句，
+使用  [Mybatis Generator](http://mybatis.org/generator/index.html)
+
  ## 脚本
  
  ```sql
@@ -188,4 +192,5 @@ create table USER
 ```shell script
 rm ~/community.*
 mvn flyway:migrate
+mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
 ```
