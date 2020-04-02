@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import top.perdant.community.dto.AccessTokenDTO;
 import top.perdant.community.dto.GitHubUser;
-import top.perdant.community.mapper.UserMapper;
 import top.perdant.community.model.User;
 import top.perdant.community.provider.GitHubProvider;
+import top.perdant.community.service.UserService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -32,12 +32,11 @@ public class AuthorizeController {
     private String redirectUri;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name="code") String code,
                            @RequestParam(name="state") String state,
-                           HttpServletRequest request,
                            HttpServletResponse response){
         // 将要传递给GitHub的参数封装进accessToken 除了 code 和 state 是从request中获取的
         // 其他的都是提前申请好放进application中
@@ -53,7 +52,8 @@ public class AuthorizeController {
         GitHubUser gitHubUser = gitHubProvider.getUser(accessToken);
         // 登录成功 有时候重置了client.secret 虽然获取到了gitHubUser但是里面的id是空的
         if (gitHubUser != null && gitHubUser.getId() != null){
-            // 手动模拟 session 和 cookie 从而实现持久化登录
+            // 手动模拟 session 和 cookie 从而实现 就算页面跳转了，也可以保持登录状态
+            // 这里有 bug 需要先判断，获取到的 GitHubUser 信息在数据库中是否已经有了，有了的话就不需要存了
             // 将user信息写入数据库,这个数据库模拟服务器的session
             User user = new User();
             // 生成一个唯一标识token
@@ -62,12 +62,9 @@ public class AuthorizeController {
             // 获取到的GitHubUser信息封装到user中
             user.setAccountId(String.valueOf(gitHubUser.getId()));
             user.setName(gitHubUser.getName());
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
             user.setAvatarUrl(gitHubUser.getAvatarUrl());
-            // user 添加到数据库
-            userMapper.insert(user);
-            // 将 token 写入一个 HttpServletResponse 自带的 cookie
+            userService.createOrUpdate(user);
+            // 将 token 写入 HttpServletResponse 自带的 cookie 中
             // 通过 response 返回给浏览器 所以 cookie 是存储在浏览器中的
             response.addCookie(new Cookie("token",token));
             return  "redirect:/";
@@ -75,5 +72,14 @@ public class AuthorizeController {
             // 登录失败
             return "redirect:/";
         }
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,HttpServletResponse response){
+        request.getSession().removeAttribute("user");
+        Cookie cookie = new Cookie("token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
     }
 }

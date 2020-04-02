@@ -162,6 +162,11 @@ MySQL的基本使用CURD：[MySQL 菜鸟教程](https://www.runoob.com/mysql/mys
     原因：EnableWebMvc导入DelegatingXXX（实现了 WebxxSupport），导致 WebAutoConfiguration (其中可以默认的去不过滤 static 文件夹)实例失败
 
 17. 添加编辑问题页面 **QuestionController 类**和 **question.html** 
+
+18. 修复登录功能，登录的代码逻辑有误，当获取到 GitHubUser 信息之后，应该先去数据库中查询 user table 里的 User 信息和其是否一致，一致的话就
+不需要新建一条 User 数据添加进 user table 了，修复这个问题，UserMapper 就不好用了，需要新建 **UserService 类**
+
+19. 退出登录功能，需要删除浏览器中的 cookie 中的 token
  ## 脚本
  
  ```sql
@@ -179,5 +184,6 @@ create table USER
 ```
 
 ```shell script
+rm ~/community.*
 mvn flyway:migrate
 ```
