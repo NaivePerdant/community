@@ -8,6 +8,7 @@ import top.perdant.community.dto.PaginationDTO;
 import top.perdant.community.dto.QuestionDTO;
 import top.perdant.community.exception.CustomizeErrorCode;
 import top.perdant.community.exception.CustomizeException;
+import top.perdant.community.mapper.QuestionExtMapper;
 import top.perdant.community.mapper.QuestionMapper;
 import top.perdant.community.mapper.UserMapper;
 import top.perdant.community.model.Question;
@@ -24,6 +25,9 @@ public class QuestionService {
 
     @Autowired
     QuestionMapper questionMapper;
+
+    @Autowired
+    QuestionExtMapper questionExtMapper;
 
     /**
      * 根据当前页码和一页展示的问题数，返回当前页面的所有问题信息 和 页码的信息
@@ -129,7 +133,7 @@ public class QuestionService {
             // 插入
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
-            questionMapper.insert(question);
+            questionMapper.insertSelective(question);
         } else {
             // 更新 不能简单的使用 updateByPrimaryKey
             // 因为 question 只是记录了 常见的修改属性 title description tag GmtModified
@@ -138,9 +142,19 @@ public class QuestionService {
             question.setGmtModified(System.currentTimeMillis());
             // 此方法没有赋值的属性为 null 的值不会更新进数据库
             int updated = questionMapper.updateByPrimaryKeySelective(question);
+
+
+            // 判断是否更新成功
             if (updated != 1){
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
         }
+    }
+
+    public void incView(Integer id) {
+        Question record = new Question();
+        record.setId(id);
+        record.setViewCount(1);
+        questionExtMapper.incView(record);
     }
 }

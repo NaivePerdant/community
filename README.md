@@ -183,7 +183,7 @@ Mybatis Generator  中有很多自动生成的方法，还不是很理解！
 使用 @ExceptionHandler methods 和 @ControllerAdvice 和 ErrorController 来处理异常
 [参考文档](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-error-handling)
 
-
+23. 增加累加阅读数的功能，只要进入页面，就会累加阅读数
  ## 脚本
  
  ```sql
