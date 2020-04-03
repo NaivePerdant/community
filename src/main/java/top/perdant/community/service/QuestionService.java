@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.perdant.community.dto.PaginationDTO;
 import top.perdant.community.dto.QuestionDTO;
+import top.perdant.community.exception.CustomizeErrorCode;
+import top.perdant.community.exception.CustomizeException;
 import top.perdant.community.mapper.QuestionMapper;
 import top.perdant.community.mapper.UserMapper;
 import top.perdant.community.model.Question;
@@ -106,6 +108,9 @@ public class QuestionService {
 
     public QuestionDTO getById(Integer id) {
         Question question = questionMapper.selectByPrimaryKey(id);
+        if (question == null) {
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);
         User user = userMapper.selectByPrimaryKey(question.getCreator());
@@ -129,13 +134,13 @@ public class QuestionService {
             // 更新 不能简单的使用 updateByPrimaryKey
             // 因为 question 只是记录了 常见的修改属性 title description tag GmtModified
             // 而其他的属性 GmtCreate viewCount commentCount 等等 都需要保留原来数据库里面的
-            // 不然的话，没有赋值的属性会变成 null，null 也会更新 数据库中的信息
-            Question updateQuestion = questionMapper.selectByPrimaryKey(question.getId());
-            updateQuestion.setGmtModified(System.currentTimeMillis());
-            updateQuestion.setTitle(question.getTitle());
-            updateQuestion.setDescription(question.getDescription());
-            updateQuestion.setTag(question.getTag());
-            questionMapper.updateByPrimaryKey(updateQuestion);
+            // 不然的话，没有赋值的属性默认为 null，null 也会更新进数据库
+            question.setGmtModified(System.currentTimeMillis());
+            // 此方法没有赋值的属性为 null 的值不会更新进数据库
+            int updated = questionMapper.updateByPrimaryKeySelective(question);
+            if (updated != 1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }
     }
 }

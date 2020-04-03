@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>社区项目</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!--引入BootStrap的css文件/主题文件-->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <!--引入自己定义的样式-->
+    <link rel="stylesheet" href="/css/community.css">
+    <!--引入 jQuery 和 Bootstrap 的 js-->
+    <script src="/js/jquery-3.4.1.js"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+</head>
+<body>
+<div th:insert="navigation :: nav"></div>
+<div class="jumbotron">
+    <h1>出错</h1>
+    <p th:text="${message}">默认错误信息</p>
+    <p><a class="btn btn-primary btn-lg" href="/" role="button">返回主页</a></p>
+</div>
+</body>
+</html>

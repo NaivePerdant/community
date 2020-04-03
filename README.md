@@ -179,7 +179,11 @@ Mybatis Generator  中有很多自动生成的方法，还不是很理解！
 
 有兴趣的可以研究一下这个分页插件：[GitHub pageHelper](https://github.com/pagehelper/Mybatis-PageHelper) 原理是在 mybatis 里设置一个拦截器
 
-22. 
+22. 在输入地址的 localhost8887/question/不存在的question id 会报错 whitelabel Error Page，为了防止这些  
+使用 @ExceptionHandler methods 和 @ControllerAdvice 和 ErrorController 来处理异常
+[参考文档](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-error-handling)
+
+
  ## 脚本
  
  ```sql
