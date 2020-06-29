@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import top.perdant.community.dto.PaginationDTO;
 import top.perdant.community.service.QuestionService;
 
+/**
+ * 首页，分页展示论坛内容API
+ *
+ * @authro perdant
+ */
 @Controller
 public class IndexController {
 

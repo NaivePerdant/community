@@ -12,7 +12,7 @@
         <result column="LIKE_COUNT" jdbcType="INTEGER" property="likeCount"/>
         <result column="TAG" jdbcType="VARCHAR" property="tag"/>
     </resultMap>
-
+    <!--自定义 sql view_count+1 -->
     <update id="incView" parameterType="top.perdant.community.model.Question">
     update QUESTION
     set

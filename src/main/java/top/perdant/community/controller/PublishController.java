@@ -3,10 +3,7 @@ package top.perdant.community.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import top.perdant.community.dto.QuestionDTO;
 import top.perdant.community.mapper.QuestionMapper;
 import top.perdant.community.model.Question;
@@ -15,7 +12,13 @@ import top.perdant.community.service.QuestionService;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * 问题的查看发布修改API
+ *
+ * @author perdant
+ */
 @Controller
+@RequestMapping("/publish")
 public class PublishController {
 
     @Autowired
@@ -30,7 +33,7 @@ public class PublishController {
      * @param id
      * @return
      */
-    @GetMapping("/publish/{id}")
+    @GetMapping("/{id}")
     public String edit(@PathVariable(name = "id") Integer id,
                        Model model){
         QuestionDTO question = questionService.getById(id);
@@ -42,12 +45,12 @@ public class PublishController {
         return "publish";
     }
 
-    @GetMapping("/publish")
+    @GetMapping()
     public String publish(){
         return "publish";
     }
 
-    @PostMapping("/publish")
+    @PostMapping()
     public String doPublish(
             @RequestParam(value = "title",required = false) String title,
             @RequestParam(value = "description",required = false) String description,

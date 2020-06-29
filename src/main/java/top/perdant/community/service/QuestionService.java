@@ -142,8 +142,6 @@ public class QuestionService {
             question.setGmtModified(System.currentTimeMillis());
             // 此方法没有赋值的属性为 null 的值不会更新进数据库
             int updated = questionMapper.updateByPrimaryKeySelective(question);
-
-
             // 判断是否更新成功
             if (updated != 1){
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
@@ -151,6 +149,10 @@ public class QuestionService {
         }
     }
 
+    /**
+     * 增加问题的阅读数
+     * @param id
+     */
     public void incView(Integer id) {
         Question record = new Question();
         record.setId(id);

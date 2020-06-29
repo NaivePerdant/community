@@ -13,11 +13,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+/**
+ * 拦截器
+ *
+ * @author perdant
+ */
 @Service
 public class SessionInterceptor implements HandlerInterceptor {
     @Autowired
     public UserMapper userMapper;
 
+    /**
+     * 在请求处理之前就执行的方法
+     *
+     * @param request
+     * @param response
+     * @param handler
+     * @return
+     * @throws Exception
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 从 cookies 里找是否有 name 为 token 的那条 cookie

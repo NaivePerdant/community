@@ -27,7 +27,7 @@
                         <!--GET -->
                         <a href="/publish">提问</a>
                     </li>
-                    <!-- 自带的session里检查 user （就是之前获取到的gitHubUser）是否是空-->
+                    <!-- 自带的 session 里检查 user （就是之前获取到的gitHubUser）是否是空-->
                     <li class="dropdown" th:if="${session.user != null}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">
@@ -40,7 +40,7 @@
                         </ul>
                     </li>
                     <li th:if="${session.user == null}">
-                        <!-- 向GitHub服务器发送id，GitHub会带着code跳转到指定uri-->
+                        <!-- 向GitHub服务器发送id，GitHub会返回code并且跳转到指定redirect_uri-->
                         <a href="https://github.com/login/oauth/authorize?client_id=b4f7f86249a8a17868a7&redirect_uri=http://localhost:8887/callback&scope=user&state=1">登录</a>
                     </li>
                 </ul>

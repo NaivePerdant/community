@@ -14,8 +14,14 @@ import top.perdant.community.service.UserService;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
+/**
+ * 第三方认证登陆API
+ *
+ * @author perdant
+ */
 @Controller
 public class AuthorizeController {
 
@@ -34,39 +40,45 @@ public class AuthorizeController {
     @Autowired
     private UserService userService;
 
+    /**
+     * 点击登陆
+     * 向GitHub服务器发送id后，GitHub会返回code并且跳转到/callback
+     * 此方法就是从其参数中拿到code，通过httpClient发送给GitHub 获取token
+     * 然后再次通过httpClient发送给GitHub 获取user信息，完成第三方授权！
+     *
+     * @param code
+     * @param state
+     * @param response
+     * @return
+     */
     @GetMapping("/callback")
     public String callback(@RequestParam(name="code") String code,
                            @RequestParam(name="state") String state,
+                           // 可以写一个BaseController把公有字段比如request和response放进去
                            HttpServletResponse response){
-        // 将要传递给GitHub的参数封装进accessToken 除了 code 和 state 是从request中获取的
-        // 其他的都是提前申请好放进application中
-        AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
-        accessTokenDTO.setClient_id(clientId);
-        accessTokenDTO.setClient_secret(clientSecret);
-        accessTokenDTO.setCode(code);
-        accessTokenDTO.setRedirect_uri(redirectUri);
-        accessTokenDTO.setState(state);
+        // 把 request body 里的参数封装（建造者模式比set更方便）
+        AccessTokenDTO accessTokenDTO = AccessTokenDTO.builder().client_id(clientId).client_secret(clientSecret)
+                                                      .code(code).redirect_uri(redirectUri).state(state).build();
         // POST https://github.com/login/oauth/access_token 获取token
         String accessToken = gitHubProvider.getAccessToken(accessTokenDTO);
         // GET https://api.github.com/user 获取user信息
         GitHubUser gitHubUser = gitHubProvider.getUser(accessToken);
-        // 登录成功 有时候重置了client.secret 虽然获取到了gitHubUser但是里面的id是空的
         if (gitHubUser != null && gitHubUser.getId() != null){
-            // 手动模拟 session 和 cookie 从而实现 就算页面跳转了，也可以保持登录状态
-            // 这里有 bug 需要先判断，获取到的 GitHubUser 信息在数据库中是否已经有了，有了的话就不需要存了
-            // 将user信息写入数据库,这个数据库模拟服务器的session
             User user = new User();
-            // 生成一个唯一标识token
+            // 服务器默认自动生成一个sessionID存入servlet默认的session中，不采用，
+            // 自己生成一组sessionID，保存到自定义的h2数据库中
             String token = UUID.randomUUID().toString();
             user.setToken(token);
             // 获取到的GitHubUser信息封装到user中
             user.setAccountId(String.valueOf(gitHubUser.getId()));
             user.setName(gitHubUser.getName());
             user.setAvatarUrl(gitHubUser.getAvatarUrl());
+            // user如果已经存在就更新，不存在就新增
             userService.createOrUpdate(user);
-            // 将 token 写入 HttpServletResponse 自带的 cookie 中
-            // 通过 response 返回给浏览器 所以 cookie 是存储在浏览器中的
+            // 将sessionID封装成cookie放入response返回给浏览器
             response.addCookie(new Cookie("token",token));
+
+            // 重定向：如果直接写 / 会导致地址不变，页面渲染成首页。使用redirect可以让地址也变成首页
             return  "redirect:/";
         }else {
             // 登录失败

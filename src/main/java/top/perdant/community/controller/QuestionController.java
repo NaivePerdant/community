@@ -15,7 +15,7 @@ public class QuestionController {
     QuestionService questionService;
 
     /**
-     * 拿到 id 返回 question.html
+     * 展示问题页面
      * @param id
      * @param model
      * @return

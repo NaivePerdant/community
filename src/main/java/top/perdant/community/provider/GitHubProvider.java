@@ -6,26 +6,29 @@ import org.springframework.stereotype.Component;
 import top.perdant.community.dto.AccessTokenDTO;
 import top.perdant.community.dto.GitHubUser;
 
-
+/**
+ * 第三方认证获取token和user信息
+ *
+ * @author perdant
+ */
 @Component
 public class GitHubProvider {
     /**
-     * 使用 OkHttp 和 fastjson
-     * POST 把参数放在 request body 里
-     * 发送 client_id client_secret code redirect_uri state
-     * 获取 response 中的 token
+     * httpClient 发送 post 请求，获取 accessToken
+     *
      * @param accessTokenDTO 封装了需要发送的参数
      * @return accessToken
      */
     public String getAccessToken(AccessTokenDTO accessTokenDTO) {
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");
         OkHttpClient client = new OkHttpClient();
-        // 把AccessTokenDTO 类快速转换为 JSON
+        // 把AccessTokenDTO 类快速转换为 JSON 放入 requestBody 中
         RequestBody body = RequestBody.create(JSON.toJSONString(accessTokenDTO), mediaType);
         Request request = new Request.Builder()
                 .url("https://github.com/login/oauth/access_token")
                 .post(body)
                 .build();
+        // 简单的 httpClient 向某个地址发送请求
         try (Response response = client.newCall(request).execute()) {
             String string = response.body().string();
             // response 中形如 access_token=e72e16c7e42f292c6912e7710c838347ae178b4a&token_type=bearer
@@ -39,8 +42,8 @@ public class GitHubProvider {
     }
 
     /**
-     * GET 把参数放在 url 里
-     * 发送 token 获取 user 信息
+     * httpClient 发送 get 请求，获取 user 信息
+     *
      * @param accessToken
      * @return 封装的 GitHubUer 信息
      */
@@ -51,9 +54,9 @@ public class GitHubProvider {
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
-            String string = response.body().string();
-            // 把 JSON 快速转换成 GitHubUser 类 并且把下划线标识自动映射为驼峰标识
-            GitHubUser gitHubUser = JSON.parseObject(string, GitHubUser.class);
+            String gitHubUserStr = response.body().string();
+            // 把 JSON 快速转换成 GitHubUser 类并且把下划线标识自动映射为驼峰标识
+            GitHubUser gitHubUser = JSON.parseObject(gitHubUserStr, GitHubUser.class);
             return gitHubUser;
         } catch (Exception e) {
             e.printStackTrace();

@@ -8,12 +8,25 @@ import top.perdant.community.exception.CustomizeException;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * 处理全局异常的API
+ *
+ * @author perdant
+ */
 @ControllerAdvice
 public class CustomizeExceptionHandler {
-    @ExceptionHandler(Exception.class)
+    /**
+     * 处理 Exception 类异常及其子类异常
+     *
+     * @param request
+     * @param ex
+     * @param model
+     * @return
+     */
+    @ExceptionHandler(value = Exception.class)
     ModelAndView handleControllerException(HttpServletRequest request, Throwable ex,
                                            Model model) {
-        // 只有通用一场可以 handle ，类似 404 不能 handle
+        // 404 505 等异常 handler 不了，所以该方法无法捕获？
         if (ex instanceof CustomizeException){
             model.addAttribute("message",ex.getMessage());
         }else {
