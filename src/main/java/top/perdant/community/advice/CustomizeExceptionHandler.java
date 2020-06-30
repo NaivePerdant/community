@@ -30,7 +30,7 @@ public class CustomizeExceptionHandler {
         if (ex instanceof CustomizeException){
             model.addAttribute("message",ex.getMessage());
         }else {
-            model.addAttribute("message","默认message");
+            model.addAttribute("message","不是404 505 也不是已经抛出的异常");
         }
         return new ModelAndView("error");
     }

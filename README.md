@@ -24,6 +24,7 @@ flyway 方便团队编程时数据库的修改和合并
 
 jQuery 封装了很多方法，更方便的操作js
 
+postman 方便测试 http method
 
 ## 资料
 
