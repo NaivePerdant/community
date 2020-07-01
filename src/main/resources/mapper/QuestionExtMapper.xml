@@ -14,9 +14,14 @@
     </resultMap>
     <!--自定义 sql view_count+1 -->
     <update id="incView" parameterType="top.perdant.community.model.Question">
-    update QUESTION
-    set
-    VIEW_COUNT = VIEW_COUNT + #{viewCount,jdbcType=INTEGER}
-    where id = #{id}
-  </update>
+        update QUESTION
+        set VIEW_COUNT = VIEW_COUNT + #{viewCount,jdbcType=INTEGER}
+        where id = #{id}
+    </update>
+
+    <update id="incCommentCount" parameterType="top.perdant.community.model.Question">
+        update QUESTION
+        set COMMENT_COUNT = COMMENT_COUNT + #{commentCount,jdbcType=INTEGER}
+        where id = #{id}
+    </update>
 </mapper>
