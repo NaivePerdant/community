@@ -5,7 +5,7 @@ import top.perdant.community.model.User;
 
 @Data
 public class QuestionDTO {
-    private Integer id;
+    private Long id;
     private String title;
     private String description;
     private Long gmtCreate;
