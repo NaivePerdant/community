@@ -2,6 +2,7 @@ package top.perdant.community.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.perdant.community.enums.CommentTypeEnum;
 import top.perdant.community.exception.CustomizeErrorCode;
 import top.perdant.community.exception.CustomizeException;
@@ -20,6 +21,7 @@ public class CommentService {
     @Autowired
     private QuestionExtMapper questionExtMapper;
 
+    @Transactional
     public void insert(Comment comment) {
         if (null == comment.getParentId() || comment.getParentId() == 0) {
             throw new CustomizeException(CustomizeErrorCode.TARGET_PARAM_NOT_FOUND);
@@ -27,7 +29,7 @@ public class CommentService {
         if (null == comment.getType() || !CommentTypeEnum.isExist(comment.getType())) {
             throw new CustomizeException(CustomizeErrorCode.TYPE_PARAM_WRONG);
         }
-        if (comment.getType() == CommentTypeEnum.COMMENT.getType()) {
+        if (comment.getType().equals(CommentTypeEnum.COMMENT.getType())) {
             // 回复评论
             Comment dbComment = commentMapper.selectByPrimaryKey(comment.getParentId());
             if (null == dbComment) {

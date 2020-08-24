@@ -89,6 +89,8 @@ MySQL的基本使用CURD：[MySQL 菜鸟教程](https://www.runoob.com/mysql/mys
   **前端：**
   白页 error.html 用来接受后端返回的modelAndView，展示错误信息message。
 - 添加展示阅读数功能，不能采用先查后改的方式，要使用sql在修改的同时做 +1 操作。因为在高并发的情况下，很容易出错。
+- 使用postman调试回复功能接口 [Postman](https://chrome.google.com/webstore/detail/coohjcphdfgbiolnekdpbcijmhambjff)
+- 页面上添加回复功能，采用局部请求，使用ajax， 它属于jquery的api ： [Jquery](https://api.jquery.com/jQuery.post/)
 
 
  ## 脚本
