@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import top.perdant.community.dto.CommentDTO;
+import top.perdant.community.dto.CommentCreateDTO;
 import top.perdant.community.dto.ResultDTO;
 import top.perdant.community.exception.CustomizeErrorCode;
 import top.perdant.community.model.Comment;
@@ -33,19 +33,20 @@ public class CommentController {
      */
     @RequestMapping(value = "/comment",method = RequestMethod.POST)
     @ResponseBody
-    public Object post(@RequestBody CommentDTO commentDTO,
+    public Object post(@RequestBody CommentCreateDTO commentCreateDTO,
                        HttpServletRequest request){
         User user = (User) request.getSession().getAttribute("user");
         if (null == user) {
             return ResultDTO.errorOf(CustomizeErrorCode.NO_LOGIN);
         }
         Comment comment = new Comment();
-        comment.setParentId(commentDTO.getParentId());
-        comment.setContent(commentDTO.getContent());
-        comment.setType(commentDTO.getType());
+        comment.setParentId(commentCreateDTO.getParentId());
+        comment.setContent(commentCreateDTO.getContent());
+        comment.setType(commentCreateDTO.getType());
+        comment.setCommentator(user.getId());
         comment.setGmtModified(System.currentTimeMillis());
         comment.setGmtCreate(System.currentTimeMillis());
-        comment.setCommentator(3L);
+        comment.setLikeCount(0L);
         commentService.insert(comment);
         return ResultDTO.okOf();
     }

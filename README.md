@@ -115,6 +115,8 @@ create table USER
  ```
 
 ```shell script
+# 执行sql 生成表
 mvn flyway:migrate
+# 自动生成 model 和 mapper
 mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
 ```

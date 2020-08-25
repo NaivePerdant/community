@@ -1,4 +1,4 @@
-body{
+body {
     background-color: #efefef;
 }
 
@@ -47,4 +47,29 @@ body{
 .btn-comment {
     float: right;
     margin-bottom: 10px;
+}
+
+.comment-sp {
+    margin-top: 0;
+}
+
+.menu {
+    color: #999999;
+    margin-top: 5px;
+}
+
+.menu .icon {
+    margin-right: 5px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.menu .icon:hover {
+    color: #499ef3;
+}
+
+.comments {
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
 }

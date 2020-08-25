@@ -7,9 +7,9 @@
     <context id="DB2Tables" targetRuntime="MyBatis3">
         <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin>
         <jdbcConnection driverClass="org.h2.Driver"
-                        connectionURL="jdbc:h2:/Users/yiqing.sun/myGitRepo/myProject/h2db/community"
-                        userId="sa"
-                        password="123">
+                        connectionURL="${h2.url}"
+                        userId="${h2.user}"
+                        password="${h2.password}">
         </jdbcConnection>
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false" />
@@ -29,6 +29,8 @@
         </javaClientGenerator>
         <table tableName="user" domainObjectName="User" ></table>
         <table tableName="question" domainObjectName="Question" ></table>
-        <table tableName="comment" domainObjectName="Comment" ></table>
+        <table tableName="comment" domainObjectName="Comment" >
+            <columnOverride column="CONTENT" jdbcType="VARCHAR"></columnOverride>
+        </table>
     </context>
 </generatorConfiguration>
