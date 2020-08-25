@@ -92,6 +92,11 @@ MySQL的基本使用CURD：[MySQL 菜鸟教程](https://www.runoob.com/mysql/mys
 - 使用postman调试回复功能接口 [Postman](https://chrome.google.com/webstore/detail/coohjcphdfgbiolnekdpbcijmhambjff)
 - 页面上添加回复功能，采用局部请求，使用ajax， 它属于jquery的api ： [Jquery](https://api.jquery.com/jQuery.post/)
 
+**从此以后，采用敏捷开发的思想，从需求，技术方案，实现等步骤逐步写起**
+
+- [20200825] 需求：在点击回复按钮时，如果没有处于登陆状态，会提示需要登陆，希望实现在点击回复后，弹出确认框，是否登陆，点击确定自动登陆。
+    技术方案：使用js在点击回复时，判断response.code，如果是需要登陆，打开登陆窗口，通过浏览器窗口本地存储一个值，用来判断是否关闭登陆窗口
+    实现：js 中使用 window 操作窗口的打开关闭以及本地存储(localStorage)
 
  ## 脚本
 

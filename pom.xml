@@ -19,7 +19,7 @@
         <okhttp.version>4.5.0-RC1</okhttp.version>
         <fastjson.url>1.2.68</fastjson.url>
         <h2.version>1.4.200</h2.version>
-        <h2.url>jdbc:h2:~/IdeaProjects/community/h2db/community</h2.url>
+        <h2.url>jdbc:h2:~/IdeaProjects/h2db/community</h2.url>
         <h2.user>sa</h2.user>
         <h2.password>123</h2.password>
         <mybatis.version>2.1.2</mybatis.version>
