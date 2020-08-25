@@ -1,19 +1,20 @@
 package top.perdant.community.controller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import top.perdant.community.dto.CommentCreateDTO;
+import top.perdant.community.dto.CommentDTO;
 import top.perdant.community.dto.ResultDTO;
+import top.perdant.community.enums.CommentTypeEnum;
 import top.perdant.community.exception.CustomizeErrorCode;
 import top.perdant.community.model.Comment;
 import top.perdant.community.model.User;
 import top.perdant.community.service.CommentService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 问题评论/回复 API
@@ -39,6 +40,9 @@ public class CommentController {
         if (null == user) {
             return ResultDTO.errorOf(CustomizeErrorCode.NO_LOGIN);
         }
+        if (null == commentCreateDTO || StringUtils.isBlank(commentCreateDTO.getContent())) {
+            return ResultDTO.errorOf(CustomizeErrorCode.COMMENT_NOT_EMPTY);
+        }
         Comment comment = new Comment();
         comment.setParentId(commentCreateDTO.getParentId());
         comment.setContent(commentCreateDTO.getContent());
@@ -49,5 +53,12 @@ public class CommentController {
         comment.setLikeCount(0L);
         commentService.insert(comment);
         return ResultDTO.okOf();
+    }
+
+    @RequestMapping(value = "/comment/{id}",method = RequestMethod.GET)
+    @ResponseBody
+    public ResultDTO comment(@PathVariable(name = "id") Long id) {
+        List<CommentDTO> commentDTOS = commentService.listByTargetId(id, CommentTypeEnum.COMMENT);
+        return ResultDTO.okOf(commentDTOS);
     }
 }

@@ -8,10 +8,7 @@ import top.perdant.community.dto.CommentDTO;
 import top.perdant.community.enums.CommentTypeEnum;
 import top.perdant.community.exception.CustomizeErrorCode;
 import top.perdant.community.exception.CustomizeException;
-import top.perdant.community.mapper.CommentMapper;
-import top.perdant.community.mapper.QuestionExtMapper;
-import top.perdant.community.mapper.QuestionMapper;
-import top.perdant.community.mapper.UserMapper;
+import top.perdant.community.mapper.*;
 import top.perdant.community.model.*;
 
 import java.util.ArrayList;
@@ -30,6 +27,8 @@ public class CommentService {
     private QuestionExtMapper questionExtMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private CommentExtMapper commentExtMapper;
 
     @Transactional
     public void insert(Comment comment) {
@@ -47,6 +46,11 @@ public class CommentService {
             }
             else {
                 commentMapper.insertSelective(comment);
+                // 增加评论数
+                Comment parentComment = new Comment();
+                parentComment.setId(comment.getParentId());
+                parentComment.setCommentCount(1);
+                commentExtMapper.incCommentCount(parentComment);
             }
         }
         else {
@@ -63,11 +67,12 @@ public class CommentService {
         }
     }
 
-    public List<CommentDTO> listByQuestionId(Long id) {
+    public List<CommentDTO> listByTargetId(Long id, CommentTypeEnum type) {
         CommentExample example = new CommentExample();
         example.createCriteria()
                 .andParentIdEqualTo(id)
-                .andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
+                .andTypeEqualTo(type.getType());
+        example.setOrderByClause("GMT_CREATE desc");
         List<Comment> comments = commentMapper.selectByExample(example);
         if (comments.size() == 0) {
             return new ArrayList<>();

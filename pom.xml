@@ -24,9 +24,17 @@
         <h2.password>123</h2.password>
         <mybatis.version>2.1.2</mybatis.version>
         <lombok.version>1.18.12</lombok.version>
+        <commons.version>3.11</commons.version>
     </properties>
     <!--可以尝试使用gradle-->
     <dependencies>
+        <!-- apache commons lang -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons.version}</version>
+        </dependency>
+        <!-- spring web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
