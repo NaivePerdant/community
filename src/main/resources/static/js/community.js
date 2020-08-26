@@ -124,3 +124,25 @@ function collapseComments(e) {
 
     }
 }
+
+/**
+ * 选取标签
+ * @param value
+ */
+function selectTag(e) {
+    var value = e.getAttribute("data-tag");
+    var previous = $('#tag').val();
+    // 标签输入栏中不存在当前选择的标签
+    if (previous.indexOf(value) == -1) {
+        // 当前标签输入栏中已经有值，需要拼接
+        if (previous) {
+            $('#tag').val(previous + ',' + value);
+        } else {
+            $('#tag').val(value);
+        }
+    }
+}
+
+function showSelectTag() {
+    $('#select-tag').show();
+}

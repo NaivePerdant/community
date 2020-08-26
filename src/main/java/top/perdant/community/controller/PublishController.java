@@ -1,9 +1,11 @@
 package top.perdant.community.controller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import top.perdant.community.cache.TagCache;
 import top.perdant.community.dto.QuestionDTO;
 import top.perdant.community.mapper.QuestionMapper;
 import top.perdant.community.model.Question;
@@ -42,11 +44,13 @@ public class PublishController {
         model.addAttribute("tag",question.getTag());
         // 找到每个问题的唯一标识
         model.addAttribute("id",question.getId());
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 
     @GetMapping()
-    public String publish(){
+    public String publish(Model model){
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 
@@ -62,6 +66,7 @@ public class PublishController {
         model.addAttribute("title",title);
         model.addAttribute("description",description);
         model.addAttribute("tag",tag);
+        model.addAttribute("tags", TagCache.get());
 
         // 正常情况 下面的判空应该放到前端，用js来校验
         if (title == null || title == ""){
@@ -74,6 +79,11 @@ public class PublishController {
         }
         if (tag == null || tag == ""){
             model.addAttribute("error","标签不能为空");
+            return "publish";
+        }
+        String invalidTag = TagCache.filterInvalid(tag);
+        if(StringUtils.isNotEmpty(invalidTag)) {
+            model.addAttribute("error","输入标签非法，请从标签库中选择正确的标签：" + invalidTag);
             return "publish";
         }
 

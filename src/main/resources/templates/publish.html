@@ -11,6 +11,7 @@
     <!--引入 jQuery 和 Bootstrap 的 js-->
     <script src="/js/jquery-3.4.1.js"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="/js/community.js" type="application/javascript"></script>
 </head>
 <body>
 <div th:insert="navigation :: nav"></div>
@@ -23,20 +24,49 @@
             <form action="\publish" method="post">
                 <!-- hidden 的效果：隐藏着传递一个参数 id 传递给后端-->
                 <input type="hidden" name="id" th:value="${id}">
+                <!-- 问题标题 -->
                 <div class="form-group">
                     <label for="title">问题</label>
                     <input name="title" id="title" type="text" class="form-control" th:value="${title}"
                            placeholder="问题标题...." autocomplete="off">
                 </div>
+                <!-- 问题详情 -->
                 <div class="form-group">
                     <label for="description">问题补充</label>
                     <textarea name="description" id="description" th:text="${description}" class="form-control"
                               cols="30" rows="10"></textarea>
                 </div>
+                <!-- 问题标签 -->
                 <div class="form-group">
                     <label for="tag">添加标签</label>
-                    <input name="tag" id="tag" type="text" th:value="${tag}" class="form-control" placeholder="输入标签"
-                           autocomplete="off">
+                    <input name="tag" id="tag" type="text" th:value="${tag}" class="form-control"
+                           placeholder="输入标签，以英文逗号分割"
+                           autocomplete="off"
+                           onclick="showSelectTag()">
+                    <!-- 可选标签 -->
+                    <div id="select-tag" class="publish-tag-tab">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item" role="presentation" th:each="selectCategory : ${tags}">
+                                <a class="nav-link" id="home-tab" data-toggle="tab" role="tab"
+                                   aria-controls="home" aria-selected="true"
+                                   th:href="${'#'+selectCategory.categoryName}"
+                                   th:text="${selectCategory.categoryName}"></a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane publish-tag-tab-content" role="tabpanel"
+                                 aria-labelledby="home-tab"
+                                 th:each="selectCategory : ${tags}"
+                                 th:id="${selectCategory.categoryName}">
+                                <span class="label label-info question-tag"
+                                      th:each="selectTag : ${selectCategory.tags}">
+                                <span class="glyphicon glyphicon-tags"
+                                      onclick="selectTag(this)"
+                                      th:data-tag="${selectTag}"
+                                      th:text="${selectTag}"></span>
+                            </span></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="container-fluid main">
                     <div class="row">
