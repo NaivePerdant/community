@@ -26,7 +26,7 @@
                 <div class="form-group">
                     <label for="title">问题</label>
                     <input name="title" id="title" type="text" class="form-control" th:value="${title}"
-                           placeholder="问题标题....">
+                           placeholder="问题标题...." autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label for="description">问题补充</label>
@@ -35,7 +35,8 @@
                 </div>
                 <div class="form-group">
                     <label for="tag">添加标签</label>
-                    <input name="tag" id="tag" type="text" th:value="${tag}" class="form-control" placeholder="输入标签">
+                    <input name="tag" id="tag" type="text" th:value="${tag}" class="form-control" placeholder="输入标签"
+                           autocomplete="off">
                 </div>
                 <div class="container-fluid main">
                     <div class="row">

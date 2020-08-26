@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import top.perdant.community.dto.CommentDTO;
 import top.perdant.community.dto.QuestionDTO;
 import top.perdant.community.enums.CommentTypeEnum;
+import top.perdant.community.model.Question;
 import top.perdant.community.service.CommentService;
 import top.perdant.community.service.QuestionService;
 
@@ -31,10 +32,12 @@ public class QuestionController {
     public String question(@PathVariable(name = "id") Long id,
                            Model model){
         QuestionDTO questionDTO = questionService.getById(id);
+        List<QuestionDTO> relatedQuestions = questionService.selectRelated(questionDTO);
         List<CommentDTO> commentDTOs = commentService.listByTargetId(id, CommentTypeEnum.QUESTION);
         // 累加阅读数
         questionService.incView(id);
         model.addAttribute("question", questionDTO);
+        model.addAttribute("relatedQuestions", relatedQuestions);
         model.addAttribute("comments", commentDTOs);
         return "question";
     }

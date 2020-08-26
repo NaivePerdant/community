@@ -90,3 +90,20 @@ body {
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+.question-tag {
+    margin-right: 5px;
+}
+.question-edit {
+    margin-top: 25px;
+}
+.question-related {
+    line-height: 20px;
+    font-size: 12px;
+    margin-left: 0;
+    list-style: none;
+    padding-left: 0;
+}
+.question-customize {
+    font-size: 25px;
+}

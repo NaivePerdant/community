@@ -1,5 +1,6 @@
 package top.perdant.community.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,9 @@ import top.perdant.community.model.QuestionExample;
 import top.perdant.community.model.User;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -54,7 +57,9 @@ public class QuestionService {
         // 根据当前页码 page 计算出 offset
         Integer offset = size * (page - 1);
         // 问题列表
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), new RowBounds(offset, size));
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.setOrderByClause("gmt_create desc");
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(offset, size));
         // 组合：问题 + 提问者信息列表
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questions) {
@@ -70,6 +75,13 @@ public class QuestionService {
         return paginationDTO;
     }
 
+    /**
+     * 用户详情页面展示该用户提出的问题列表
+     * @param userId
+     * @param page
+     * @param size
+     * @return
+     */
     public PaginationDTO list(Long userId, Integer page, Integer size) {
         PaginationDTO paginationDTO = new PaginationDTO();
         // 所有问题的总数量
@@ -92,6 +104,7 @@ public class QuestionService {
         Integer offset = size * (page - 1);
         // 问题列表
         QuestionExample questionExample = new QuestionExample();
+        questionExample.setOrderByClause("gmt_create desc");
         questionExample.createCriteria()
                 .andCreatorEqualTo(userId);
         List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(offset, size));
@@ -160,5 +173,25 @@ public class QuestionService {
         record.setId(id);
         record.setViewCount(1);
         questionExtMapper.incView(record);
+    }
+
+    public List<QuestionDTO> selectRelated(QuestionDTO queryDTO) {
+        String tag = queryDTO.getTag();
+        if (StringUtils.isBlank(tag)) {
+            return new ArrayList<>();
+        } else {
+            String[] tags = StringUtils.split(tag, ",");
+            String regexpTag = Arrays.stream(tags).collect(Collectors.joining("|"));
+            Question question = new Question();
+            question.setId(queryDTO.getId());
+            question.setTag(regexpTag);
+            List<Question> questions = questionExtMapper.selectRelated(question);
+            List<QuestionDTO> questionDTOs = questions.stream().map(q -> {
+                QuestionDTO questionDTO = new QuestionDTO();
+                BeanUtils.copyProperties(q, questionDTO);
+                return questionDTO;
+            }).collect(Collectors.toList());
+            return questionDTOs;
+        }
     }
 }
