@@ -8,11 +8,16 @@
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <!--引入自己定义的样式-->
     <link rel="stylesheet" href="/css/community.css">
+    <link rel="stylesheet" href="/css/editormd.preview.css"/>
     <!--引入 jQuery 和 Bootstrap 的 js-->
-    <script src="/js/jquery-3.4.1.js"></script>
+    <script src="/js/jquery-3.4.1.js" type="application/javascript"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
     <script src="/js/moment.js" type="application/javascript"></script>
     <script src="/js/community.js" type="application/javascript"></script>
+    <!-- markdown编辑器 -->
+    <script src="/js/editormd.js" type="application/javascript"></script>
+    <script src="/lib/marked.min.js" type="application/javascript"></script>
+    <script src="/lib/prettify.min.js" type="application/javascript"></script>
 </head>
 <body>
 <div th:insert="navigation :: nav"></div>
@@ -30,7 +35,15 @@
             </span> <br>
                 <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <!-- 问题描述 -->
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:text="${question.description}"></div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"
+                     id="question-markdown-view">
+                    <textarea style="display:none;" th:text="${question.description}"></textarea>
+                </div>
+                <script type="text/javascript">
+                    $(function () {
+                        editormd.markdownToHTML("question-markdown-view", {});
+                    });
+                </script>
                 <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <!-- 标签 -->
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
