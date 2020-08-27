@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.perdant.community.dto.CommentDTO;
 import top.perdant.community.enums.CommentTypeEnum;
+import top.perdant.community.enums.NotificationTypeEnum;
+import top.perdant.community.enums.NotificationStatusEnum;
 import top.perdant.community.exception.CustomizeErrorCode;
 import top.perdant.community.exception.CustomizeException;
 import top.perdant.community.mapper.*;
@@ -29,9 +31,11 @@ public class CommentService {
     private UserMapper userMapper;
     @Autowired
     private CommentExtMapper commentExtMapper;
+    @Autowired
+    private NotificationMapper notificationMapper;
 
     @Transactional
-    public void insert(Comment comment) {
+    public void insert(Comment comment, User commentator) {
         if (null == comment.getParentId() || comment.getParentId() == 0) {
             throw new CustomizeException(CustomizeErrorCode.TARGET_PARAM_NOT_FOUND);
         }
@@ -43,28 +47,56 @@ public class CommentService {
             Comment dbComment = commentMapper.selectByPrimaryKey(comment.getParentId());
             if (null == dbComment) {
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
-            }
-            else {
+            } else {
                 commentMapper.insertSelective(comment);
                 // 增加评论数
                 Comment parentComment = new Comment();
                 parentComment.setId(comment.getParentId());
                 parentComment.setCommentCount(1);
                 commentExtMapper.incCommentCount(parentComment);
+                // 一级评论的问题
+                Question question = questionMapper.selectByPrimaryKey(dbComment.getParentId());
+                if (null == question) {
+                    throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+                }
+                // 创建通知
+                createNotify(comment, dbComment.getCommentator(), commentator.getName(), question.getTitle(), NotificationTypeEnum.REPLY_COMMENT, question.getId());
             }
-        }
-        else {
+        } else {
             // 回复问题
             Question question = questionMapper.selectByPrimaryKey(comment.getParentId());
             if (null == question) {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
-            }
-            else {
+            } else {
                 commentMapper.insertSelective(comment);
                 question.setCommentCount(1);
                 questionExtMapper.incCommentCount(question);
+                // 创建通知
+                createNotify(comment, question.getCreator(), commentator.getName(), question.getTitle(), NotificationTypeEnum.REPLY_QUESTION, comment.getParentId());
             }
         }
+    }
+
+    /**
+     * 创建一条新通知
+     * @param comment 评论
+     * @param receiver 通知的接收者
+     * @param notifierName 通知的发起人
+     * @param outerTitle 评论的问题标题
+     * @param notificationType 评论的类型：问题 or 回复
+     * @param outerId 无论评论问题还是回复，都去找其根问题的id
+     */
+    private void createNotify(Comment comment, Long receiver, String notifierName, String outerTitle, NotificationTypeEnum notificationType, Long outerId) {
+        Notification notification = new Notification();
+        notification.setNotifier(comment.getCommentator());
+        notification.setNotifierName(notifierName);
+        notification.setReceiver(receiver);
+        notification.setOuterId(outerId);
+        notification.setOuterTitle(outerTitle);
+        notification.setType(notificationType.getType());
+        notification.setStatus(NotificationStatusEnum.UNREAD.getStatus());
+        notification.setGmtCreate(System.currentTimeMillis());
+        notificationMapper.insert(notification);
     }
 
     public List<CommentDTO> listByTargetId(Long id, CommentTypeEnum type) {
@@ -90,7 +122,7 @@ public class CommentService {
         // 将comment转换成commentDTO
         List<CommentDTO> commentDTOs = comments.stream().map(comment -> {
             CommentDTO commentDTO = new CommentDTO();
-            BeanUtils.copyProperties(comment,commentDTO);
+            BeanUtils.copyProperties(comment, commentDTO);
             commentDTO.setUser(userMap.get(comment.getCommentator()));
             return commentDTO;
         }).collect(Collectors.toList());

@@ -40,7 +40,7 @@ public class QuestionService {
      * @return PaginationDTO  包装了 当前页码对应的所有问题 当前页码前后的页码数 是否展示下一页 上一页 尾页 首页的标识
      */
     public PaginationDTO list(Integer page, Integer size) {
-        PaginationDTO paginationDTO = new PaginationDTO();
+        PaginationDTO<QuestionDTO> paginationDTO = new PaginationDTO<>();
         // 所有问题的总数量
         Integer totalCount = (int) questionMapper.countByExample(new QuestionExample());
         // 设置页码
@@ -71,7 +71,7 @@ public class QuestionService {
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }
-        paginationDTO.setQuestions(questionDTOList);
+        paginationDTO.setData(questionDTOList);
         return paginationDTO;
     }
 
@@ -83,7 +83,7 @@ public class QuestionService {
      * @return
      */
     public PaginationDTO list(Long userId, Integer page, Integer size) {
-        PaginationDTO paginationDTO = new PaginationDTO();
+        PaginationDTO<QuestionDTO> paginationDTO = new PaginationDTO<>();
         // 所有问题的总数量
         QuestionExample example = new QuestionExample();
         example.createCriteria()
@@ -119,7 +119,7 @@ public class QuestionService {
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }
-        paginationDTO.setQuestions(questionDTOList);
+        paginationDTO.setData(questionDTOList);
         return paginationDTO;
     }
 

@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import top.perdant.community.mapper.UserMapper;
+import top.perdant.community.model.Notification;
 import top.perdant.community.model.User;
 import top.perdant.community.model.UserExample;
+import top.perdant.community.service.NotificationService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +23,9 @@ import java.util.List;
 @Service
 public class SessionInterceptor implements HandlerInterceptor {
     @Autowired
-    public UserMapper userMapper;
+    private UserMapper userMapper;
+    @Autowired
+    private NotificationService notificationService;
 
     /**
      * 在请求处理之前就执行的方法
@@ -49,6 +53,8 @@ public class SessionInterceptor implements HandlerInterceptor {
                     if (users.size() != 0) {
                         // 把这条 user 信息写到 session 里，发给前端
                         request.getSession().setAttribute("user", users.get(0));
+                        Long unreadCount = notificationService.unreadCount(users.get(0).getId());
+                        request.getSession().setAttribute("unreadCount",unreadCount);
                     }
                     break;
                 }
