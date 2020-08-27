@@ -92,7 +92,9 @@ body {
 }
 
 .question-tag {
-    margin-right: 5px;
+    margin: 5px 5px;
+    white-space: normal;
+    display: inline-block;
 }
 .question-edit {
     margin-top: 25px;
