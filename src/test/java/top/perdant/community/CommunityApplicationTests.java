@@ -8,6 +8,7 @@ class CommunityApplicationTests {
 
     @Test
     void contextLoads() {
+        System.out.println("test.jpg".split("\\.").toString());
     }
 
 }

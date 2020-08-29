@@ -15,7 +15,9 @@ public enum  CustomizeErrorCode implements ICustomizeErrorCode {
     COMMENT_NOT_FOUND(2006,"回复的评论不存在"),
     COMMENT_NOT_EMPTY(2007,"输入内容不能为空"),
     READ_NOTIFICATION_FAIL(2008,"读取的回复不属于你！"),
-    NOTIFICATION_NOT_FOUND(2009,"读取的回复不存在");
+    NOTIFICATION_NOT_FOUND(2009,"读取的回复不存在"),
+    UPLOAD_FILE_FAIL(2010,"上传文件失败");
+
     private Integer code;
     private String message;
 
