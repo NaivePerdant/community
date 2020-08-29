@@ -87,6 +87,10 @@ public class CommentService {
      * @param outerId 无论评论问题还是回复，都去找其根问题的id
      */
     private void createNotify(Comment comment, Long receiver, String notifierName, String outerTitle, NotificationTypeEnum notificationType, Long outerId) {
+        // 接收通知和发送通知的人是同一个，不需要通知
+        if(receiver == comment.getCommentator()) {
+            return;
+        }
         Notification notification = new Notification();
         notification.setNotifier(comment.getCommentator());
         notification.setNotifierName(notifierName);

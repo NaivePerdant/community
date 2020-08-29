@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.perdant.community.dto.PaginationDTO;
 import top.perdant.community.dto.QuestionDTO;
+import top.perdant.community.dto.QuestionQueryDTO;
 import top.perdant.community.exception.CustomizeErrorCode;
 import top.perdant.community.exception.CustomizeException;
 import top.perdant.community.mapper.QuestionExtMapper;
@@ -39,10 +40,18 @@ public class QuestionService {
      * @param size 每页展示的问题数
      * @return PaginationDTO  包装了 当前页码对应的所有问题 当前页码前后的页码数 是否展示下一页 上一页 尾页 首页的标识
      */
-    public PaginationDTO list(Integer page, Integer size) {
+    public PaginationDTO list(String search, Integer page, Integer size) {
+        if (StringUtils.isNotBlank(search)) {
+            String[] keywords = StringUtils.split(search, " ");
+            search = Arrays.stream(keywords).collect(Collectors.joining("|"));
+        }
+
         PaginationDTO<QuestionDTO> paginationDTO = new PaginationDTO<>();
         // 所有问题的总数量
-        Integer totalCount = (int) questionMapper.countByExample(new QuestionExample());
+        QuestionQueryDTO questionQueryDTO = new QuestionQueryDTO();
+        questionQueryDTO.setSearch(search);
+        Integer totalCount = questionExtMapper.countBySearch(questionQueryDTO);
+
         // 设置页码
         paginationDTO.setPagination(totalCount, page, size);
         // 判断传递的 page 是否超出范围
@@ -57,9 +66,9 @@ public class QuestionService {
         // 根据当前页码 page 计算出 offset
         Integer offset = size * (page - 1);
         // 问题列表
-        QuestionExample questionExample = new QuestionExample();
-        questionExample.setOrderByClause("gmt_create desc");
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(offset, size));
+        questionQueryDTO.setPage(offset);
+        questionQueryDTO.setSize(size);
+        List<Question> questions = questionExtMapper.selectBySearch(questionQueryDTO);
         // 组合：问题 + 提问者信息列表
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questions) {
@@ -175,6 +184,11 @@ public class QuestionService {
         questionExtMapper.incView(record);
     }
 
+    /**
+     * 查询包含相同标签的问题
+     * @param queryDTO
+     * @return
+     */
     public List<QuestionDTO> selectRelated(QuestionDTO queryDTO) {
         String tag = queryDTO.getTag();
         if (StringUtils.isBlank(tag)) {
