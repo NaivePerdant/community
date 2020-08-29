@@ -122,6 +122,9 @@ MySQL的基本使用CURD：[MySQL 菜鸟教程](https://www.runoob.com/mysql/mys
         - 展示列表，通过查询notification表传给前端，前端仿照分页展示问题列表，展示通知列表
         - 当点击通知信息时，将该通知修改为已读状态，并且跳转到该评论对应的问题页面
         - 实时计算未读通知数量，将数字展示在通知按钮旁边
+
+- [20200828] 需求：问题详情输入框支持代码图片等等
+    技术方案：引入markdown编辑器 [editor.md](http://editor.md.ipandao.com/)
         
  ## 脚本
 
