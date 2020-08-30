@@ -139,6 +139,8 @@ MySQL的基本使用CURD：[MySQL 菜鸟教程](https://www.runoob.com/mysql/mys
     
 - [20200829] 需求：搜索框支持搜索功能
     在实际生产环境，都是用es做的，这里使用比较基础的正则匹配，类似查询相关问题时使用的方法
+    
+- [20200829] 服务器部署，使用阿里云
  
  ## 脚本
 
@@ -161,4 +163,18 @@ create table USER
 mvn flyway:migrate
 # 自动生成 model 和 mapper
 mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
+
+# 部署
+yum update
+yum install git
+mkdir App
+cd App
+git clone https://github.com/NaivePerdant/community.git
+yum install maven # 自动安装java 1.8 
+cd community
+mvn clean compile package
+# 配置生产环境的配置
+cp src/main/resources/application.properties src/main/resources/application-production.properties
+mvn package
+java -jar -Dspring.profiles.active=production target/community-0.0.1-SNAPSHOT.jar
 ```

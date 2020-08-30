@@ -1,6 +1,7 @@
 package top.perdant.community.interceptor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,6 +27,8 @@ public class SessionInterceptor implements HandlerInterceptor {
     private UserMapper userMapper;
     @Autowired
     private NotificationService notificationService;
+    @Value("${github.redirect.uri}")
+    private String redirectUri;
 
     /**
      * 在请求处理之前就执行的方法
@@ -38,6 +41,7 @@ public class SessionInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        request.getServletContext().setAttribute("redirectUri", redirectUri);
         // 从 cookies 里找是否有 name 为 token 的那条 cookie
         Cookie[] cookies = request.getCookies();
         if (cookies != null && cookies.length != 0) {

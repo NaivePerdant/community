@@ -11,9 +11,9 @@
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                         data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">社区项目</span>
+                    <span class="sr-only">论坛项目</span>
                 </button>
-                <a class="navbar-brand" href="/">社区项目</a>
+                <a class="navbar-brand" href="/">论坛项目</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <form class="navbar-form navbar-left" action="/" method="get">
@@ -46,7 +46,7 @@
                     </li>
                     <li th:if="${session.user == null}">
                         <!-- 向GitHub服务器发送id，GitHub会返回code并且跳转到指定redirect_uri-->
-                        <a href="https://github.com/login/oauth/authorize?client_id=b4f7f86249a8a17868a7&redirect_uri=http://localhost:8887/callback&scope=user&state=1">登录</a>
+                        <a th:href="@{https://github.com/login/oauth/authorize(client_id='b4f7f86249a8a17868a7',redirect_uri=${#httpServletRequest.getServletContext().getAttribute('redirectUri')},scope='user',state=1)}">登录</a>
                     </li>
                 </ul>
             </div>

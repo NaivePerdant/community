@@ -1,5 +1,5 @@
-alter table NOTIFICATION
-    add NOTIFIER_NAME varchar(100) after NOTIFIER;
+ALTER TABLE notification
+    ADD notifier_name VARCHAR(100) AFTER notifier;
 
-alter table NOTIFICATION
-    add OUTER_TITLE varchar(256) after OUTER_ID;
+ALTER TABLE notification
+    ADD outer_title VARCHAR(256) AFTER outer_id;

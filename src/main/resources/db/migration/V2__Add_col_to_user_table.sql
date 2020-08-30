@@ -1,2 +1,2 @@
-alter table USER
-	add bio varchar(256) after token;
+ALTER TABLE user
+	ADD bio VARCHAR(256) AFTER token;

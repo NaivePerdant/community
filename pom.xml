@@ -18,16 +18,16 @@
         <java.version>1.8</java.version>
         <okhttp.version>4.5.0-RC1</okhttp.version>
         <fastjson.url>1.2.68</fastjson.url>
-        <h2.version>1.4.200</h2.version>
-        <h2.url>jdbc:h2:~/IdeaProjects/h2db/community</h2.url>
-        <h2.user>sa</h2.user>
-        <h2.password>123</h2.password>
+        <mysql.version>8.0.21</mysql.version>
+        <!--连接数据库的账号密码，本人已经加密，不要盗窃，谢谢-->
+        <mysql.url>abaabaaba</mysql.url>
+        <mysql.user>abaabaaba</mysql.user>
+        <mysql.password>abaabaaba</mysql.password>
         <mybatis.version>2.1.2</mybatis.version>
         <lombok.version>1.18.12</lombok.version>
         <commons.version>3.11</commons.version>
         <oss.version>3.10.2</oss.version>
     </properties>
-    <!--可以尝试使用gradle-->
     <dependencies>
         <!-- apache commons lang -->
         <dependency>
@@ -62,11 +62,11 @@
             <artifactId>fastjson</artifactId>
             <version>${fastjson.url}</version>
         </dependency>
-        <!--h2-->
+        <!-- mysql -->
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
         </dependency>
         <!--mybatis-->
         <dependency>
@@ -119,17 +119,15 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>6.3.2</version>
                 <configuration>
-                    <!--这里根据本地数据库地址做响应修改-->
-                    <url>${h2.url}</url>
-                    <!--这里可以使用占位符，可以优化-->
-                    <user>${h2.user}</user>
-                    <password>${h2.password}</password>
+                    <url>${mysql.url}</url>
+                    <user>${mysql.user}</user>
+                    <password>${mysql.password}</password>
                 </configuration>
                 <dependencies>
                     <dependency>
-                        <groupId>com.h2database</groupId>
-                        <artifactId>h2</artifactId>
-                        <version>${h2.version}</version>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>${mysql.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -140,13 +138,12 @@
                 <version>1.4.0</version>
                 <dependencies>
                     <dependency>
-                        <groupId>com.h2database</groupId>
-                        <artifactId>h2</artifactId>
-                        <version>${h2.version}</version>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>${mysql.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
         </plugins>
     </build>
-
 </project>
