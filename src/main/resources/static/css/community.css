@@ -118,3 +118,8 @@ body {
 .publish-tag-tab .publish-tag-tab-content {
     padding-top: 10px;
 }
+
+.footer {
+    padding: 10px 25%;
+    color:#666;
+}
