@@ -1,6 +1,6 @@
 create table question
 (
-	id int auto_increment,
+	id int auto_increment not null,
 	title varchar(50),
 	description text,
 	creator int,

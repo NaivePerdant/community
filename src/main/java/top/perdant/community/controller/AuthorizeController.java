@@ -79,7 +79,7 @@ public class AuthorizeController {
             userService.createOrUpdate(user);
             // 将sessionID封装成cookie放入response返回给浏览器
             response.addCookie(new Cookie("token",token));
-
+            log.info("callback success redirect to index");
             // 重定向：如果直接写 / 会导致地址不变，页面渲染成首页。使用redirect可以让地址也变成首页
             return  "redirect:/";
         }else {
