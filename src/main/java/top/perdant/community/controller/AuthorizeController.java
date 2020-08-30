@@ -1,5 +1,6 @@
 package top.perdant.community.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,7 @@ import java.util.UUID;
  * @author perdant
  */
 @Controller
+@Slf4j
 public class AuthorizeController {
 
     @Autowired
@@ -81,6 +83,8 @@ public class AuthorizeController {
             // 重定向：如果直接写 / 会导致地址不变，页面渲染成首页。使用redirect可以让地址也变成首页
             return  "redirect:/";
         }else {
+            // 以此为例，打印日志，需要注解 @Slf4j
+            log.error("callback get github error, {}", gitHubUser);
             // 登录失败
             return "redirect:/";
         }
