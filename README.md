@@ -161,6 +161,7 @@ create table USER
 ```shell script
 # 执行sql 生成表
 mvn flyway:migrate
+mvn flyway:repair
 # 自动生成 model 和 mapper
 mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
 
@@ -176,5 +177,5 @@ mvn clean compile package
 # 配置生产环境的配置
 cp src/main/resources/application.properties src/main/resources/application-production.properties
 mvn package
-java -jar -Dspring.profiles.active=production target/community-0.0.1-SNAPSHOT.jar
+nohup java -jar target/community-0.0.1-SNAPSHOT.jar --spring.profiles.active=production &
 ```
