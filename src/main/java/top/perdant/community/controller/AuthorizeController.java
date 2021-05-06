@@ -45,7 +45,7 @@ public class AuthorizeController {
     /**
      * 点击登陆
      * 向GitHub服务器发送id后，GitHub会返回code并且跳转到/callback
-     * 此方法就是从其参数中拿到code，通过httpClient发送给GitHub 获取token
+     * 此方法就是从url的参数中拿到code，通过httpClient发送给GitHub 获取token
      * 然后再次通过httpClient发送给GitHub 获取user信息，完成第三方授权！
      *
      * @param code
