@@ -18,7 +18,7 @@
         <java.version>1.8</java.version>
         <okhttp.version>4.5.0-RC1</okhttp.version>
         <fastjson.url>1.2.68</fastjson.url>
-        <mysql.version>8.0.21</mysql.version>
+        <mysql.version>8.0.28</mysql.version>
         <!--连接数据库的账号密码，本人已经加密，不要盗窃，谢谢-->
         <mysql.url>abaabaaba</mysql.url>
         <mysql.user>abaabaaba</mysql.user>
