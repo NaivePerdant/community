@@ -2,7 +2,9 @@
 
 ## 技术栈
 
-Spring Boot
+java 版本 1.8
+
+Spring Boot 版本 2.0 任意版本 （3.0以后的版本必定报错：源发行版 17 需要目标发行版 17 或者 java: 无效的目标发行版: 17）
 
 Git/GitHub
 
