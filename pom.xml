@@ -25,7 +25,7 @@
         <mysql.password>abaabaaba</mysql.password>
         <mybatis.version>2.1.2</mybatis.version>
         <lombok.version>1.18.12</lombok.version>
-        <commons.version>3.11</commons.version>
+        <commons.version>3.18.0</commons.version>
         <oss.version>3.10.2</oss.version>
     </properties>
     <dependencies>
